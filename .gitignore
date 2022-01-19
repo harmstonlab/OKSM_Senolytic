@@ -39,3 +39,4 @@ vignettes/*.pdf
 .Renviron
 annotation
 .DS_Store
+figures/
