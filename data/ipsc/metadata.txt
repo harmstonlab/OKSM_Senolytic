@@ -1,0 +1,13 @@
+sample_id,condition,replicate
+Control_1,Control,"1"
+Control_2,Control,"2"
+Control_3,Control,"3"
+O1,OKSM,"1"
+O2,OKSM,"2"
+O3,OKSM,"3"
+S1,Senolytic,"1"
+S2,Senolytic,"2"
+S3,Senolytic,"3"
+SO1,Senolytic_OKSM,"1"
+SO2,Senolytic_OKSM,"2"
+SO3,Senolytic_OKSM,"3"
