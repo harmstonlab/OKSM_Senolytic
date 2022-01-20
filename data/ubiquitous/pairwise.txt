@@ -1,0 +1,7 @@
+sample_id,condition,replicate
+AT_TdTom_1,Control,"1"
+AT_TdTom_2,Control,"2"
+AT_TdTom_3,Control,"3"
+AT_OKSM_1,OKSM,"1"
+AT_OKSM_2,OKSM,"2"
+AT_OKSM_3,OKSM,"3"
