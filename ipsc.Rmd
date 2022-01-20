@@ -250,12 +250,12 @@ assay_df = assay(significant_rld)
 sig_de_granges <- ensembl.genes[rownames(assay_df)]
 sig_de_granges <- promoters(sig_de_granges, upstream= 500, downstream = 500, use.names = TRUE)
 
-## All expressed genes
-sig_all_granges <- ensembl.genes[rownames(counts(dds)),]
-sig_all_granges <- promoters(sig_all_granges, upstream = 500, downstream = 500, use.names = TRUE)
-
-saveRDS(sig_de_granges, paste0(output_dir,"mea_ensembl_sig.rds"))
-saveRDS(sig_all_granges, paste0(output_dir,"mea_ensembl_all.rds"))
+# ## All expressed genes
+# sig_all_granges <- ensembl.genes[rownames(counts(dds)),]
+# sig_all_granges <- promoters(sig_all_granges, upstream = 500, downstream = 500, use.names = TRUE)
+# 
+# saveRDS(sig_de_granges, paste0(output_dir,"mea_ensembl_sig.rds"))
+# saveRDS(sig_all_granges, paste0(output_dir,"mea_ensembl_all.rds"))
 ```
 
 # Visualisation
@@ -286,6 +286,7 @@ plot(bar, type="l")
 ## Heatmap
 ```{r}
 pam_clust <- generate_data(zscores, 7, "pam")
+saveRDS(pam_clust, "output/ipsc/pam_clust.rds")
 # pam_clust <- as.data.frame(pam_clust)
 # pam_clust$Cluster <- factor(pam_clust$Cluster, levels = c(5,4,3,1,2,6))
 # pam_clust <- pam_clust[order(pam_clust$Cluster),]
@@ -321,31 +322,24 @@ write.table(dds_df, "output/ipsc/clusters.csv", row.names = TRUE, col.names = TR
 ```{r}
 c1 <- pam_clust_df[pam_clust_df$Cluster == 1, ] %>%
   dplyr::select(-Cluster)
-saveRDS(c1, "output/ipsc/ipsc_c1.rds")
 
 c2 <- pam_clust_df[pam_clust_df$Cluster == 2, ] %>%
   dplyr::select(-Cluster)
-saveRDS(c2, "output/ipsc/ipsc_c2.rds")
 
 c3 <- pam_clust_df[pam_clust_df$Cluster == 3, ] %>%
   dplyr::select(-Cluster)
-saveRDS(c3, "output/ipsc/ipsc_c3.rds")
 
 c4 <- pam_clust_df[pam_clust_df$Cluster == 4, ] %>%
   dplyr::select(-Cluster)
-saveRDS(c4, "output/ipsc/ipsc_c4.rds")
 
 c5 <- pam_clust_df[pam_clust_df$Cluster == 5, ] %>%
   dplyr::select(-Cluster)
-saveRDS(c5, "output/ipsc/ipsc_c5.rds")
 
 c6 <- pam_clust_df[pam_clust_df$Cluster == 6, ] %>%
   dplyr::select(-Cluster)
-saveRDS(c6, "output/ipsc/ipsc_c6.rds")
 
 c7 <- pam_clust_df[pam_clust_df$Cluster == 7, ] %>%
   dplyr::select(-Cluster)
-saveRDS(c7, "output/ipsc/ipsc_c7.rds")
 
 data.frame(Cluster = c("Cluster 1", "Cluster 2", "Cluster 3", "Cluster 4", 
                        "Cluster 5", "Cluster 6", "Cluster 7", "Total"),
@@ -372,6 +366,7 @@ plot(sil, border=NA, main = "Silhouette Plot for 7 Clusters")
 setEnrichrSite("FlyEnrichr")
 dbs <- listEnrichrDbs()
 to_check <- c("GO_Biological_Process_2018", "KEGG_2019")
+output_dir <- "output/ipsc/"
 ```
 
 ## Cluster 1 {.tabset}
@@ -385,6 +380,7 @@ eresList <- enrichr(c1_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ipsc_c1_go")
 ```
 
 ### KEGG_2019
@@ -392,6 +388,7 @@ datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: n
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+get_important_terms(eresList$KEGG_2019, output_dir, "ipsc_c1_kegg")
 ```
 
 ## Cluster 2 {.tabset}
@@ -405,6 +402,7 @@ eresList <- enrichr(c2_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ipsc_c2_go")
 ```
 
 ### KEGG_2019
@@ -412,6 +410,7 @@ datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: n
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+get_important_terms(eresList$KEGG_2019, output_dir, "ipsc_c2_kegg")
 ```
 
 ## Cluster 3 {.tabset}
@@ -425,6 +424,7 @@ eresList <- enrichr(c3_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ipsc_c3_go")
 ```
 
 ### KEGG_2019
@@ -432,6 +432,7 @@ datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: n
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+get_important_terms(eresList$KEGG_2019, output_dir, "ipsc_c3_kegg")
 ```
 
 ## Cluster 4 {.tabset}
@@ -445,6 +446,7 @@ eresList <- enrichr(c4_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ipsc_c4_go")
 ```
 
 ### KEGG_2019
@@ -452,6 +454,7 @@ datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: n
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+get_important_terms(eresList$KEGG_2019, output_dir, "ipsc_c4_kegg")
 ```
 
 ## Cluster 5 {.tabset}
@@ -465,6 +468,7 @@ eresList <- enrichr(c5_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ipsc_c5_go")
 ```
 
 ### KEGG_2019
@@ -472,6 +476,7 @@ datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: n
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+get_important_terms(eresList$KEGG_2019, output_dir, "ipsc_c5_kegg")
 ```
 
 ## Cluster 6 {.tabset}
@@ -485,6 +490,7 @@ eresList <- enrichr(c6_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ipsc_c6_go")
 ```
 
 ### KEGG_2019
@@ -492,6 +498,7 @@ datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: n
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+get_important_terms(eresList$KEGG_2019, output_dir, "ipsc_c6_kegg")
 ```
 
 ## Cluster 7 {.tabset}
@@ -505,6 +512,7 @@ eresList <- enrichr(c7_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ipsc_c7_go")
 ```
 
 ### KEGG_2019
@@ -512,6 +520,7 @@ datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: n
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+get_important_terms(eresList$KEGG_2019, output_dir, "ipsc_c7_kegg")
 ```
 
 # Session Info
