@@ -1,0 +1,520 @@
+---
+title: "OKSM_Senolytic RNA-Seq Analysis (iPSC)"
+author: Ellora Chua
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
+    theme: yeti
+    highlight: haddock
+---
+
+```{r global_options, include=FALSE}
+short=FALSE 
+#if short==TRUE, do not echo code chunks -- code folding doesn't work if short == TRUE
+debug=FALSE
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='./figures/ipsc/',
+                      echo=!short, warning=debug, message=debug, dev=c("png", "cairo_pdf"))
+```
+
+```{r loading libraries, include = FALSE}
+source("functions.R")
+library(DESeq2)
+library(ggplot2)
+library(genefilter)
+library(GenomicFeatures)
+library(biomaRt)
+library(knitr)
+library(reshape2)
+library(scales)
+library(Biostrings)
+library(BSgenome.Dmelanogaster.UCSC.dm6)
+library(tidyverse)
+library(pheatmap)
+library(RColorBrewer)
+library(DT)
+library(enrichR)
+```
+
+# Quality Control & EDA
+```{r cache=TRUE, include=FALSE}
+dm.gtf.db <- makeTxDbFromGFF("annotation/Drosophila_melanogaster.BDGP6.22.97.chr.gtf", format="gtf" )
+ensembl.genes = genes(dm.gtf.db)
+fruitfly = useEnsembl(biomart="ENSEMBL_MART_ENSEMBL", dataset="dmelanogaster_gene_ensembl", mirror = "uswest")
+bm.annotations = getBM(attributes=c("ensembl_gene_id", "entrezgene_id", "gene_biotype", "external_gene_name"), mart=fruitfly, filters="ensembl_gene_id", values=ensembl.genes$gene_id, uniqueRows=TRUE)
+ensembl.genes$gene_biotype = bm.annotations$gene_biotype[match(ensembl.genes$gene_id, bm.annotations$ensembl_gene_id) ]
+ensembl.genes$entrezgene_id = bm.annotations$entrezgene_id[match(ensembl.genes$gene_id, bm.annotations$ensembl_gene_id) ]
+ensembl.genes$external_gene_name = bm.annotations$external_gene_name[match(ensembl.genes$gene_id, bm.annotations$ensembl_gene_id) ]
+```
+
+```{r loading data, include=FALSE}
+experimental_metadata = read.delim("data/ipsc/metadata.txt", sep=",", header=TRUE, stringsAsFactors=FALSE)
+
+#Create a matrix of the data (nrow can be obtained by calling wc -l *.genes.results in terminal; note -1 for header)
+#Note that the nrow for this now changes since we've added the construct
+data = matrix(0, ncol=length(experimental_metadata$sample_id), nrow=17714)
+colnames(data)= experimental_metadata$sample_id
+for( i in experimental_metadata$sample_id){
+  data[,i] = read.table(paste("data/ipsc/", i, ".genes.results",sep=""), sep="\t", header=TRUE)$expected_count
+}
+row.names(data) = read.table(paste("data/ipsc/", i, ".genes.results",sep=""), sep="\t", header=TRUE)$gene_id
+
+#Create a factor for the condition column - by making it a factor you give it an order
+experimental_metadata$condition = factor(experimental_metadata$condition, levels=c("Control", "OKSM", "Senolytic", "Senolytic_OKSM"))
+
+#Create a factor for the replicate column - by making it a factor you give it an order
+experimental_metadata$replicate = factor(experimental_metadata$replicate, levels=c("1", "2", "3"))
+#experimental_metadata$batch = factor(experimental_metadata$batch, levels=c("1", "2", "3"))
+
+#DESeq needs read counts to be integers
+data_mat = apply(round(data), c(1,2), as.integer)
+
+#Specifying which group is the control group to make appropriate contrasts downstream
+#experimental_metadata$condition <- relevel(experimental_metadata$condition, ref = "Control")
+
+#Creates the DESeq2 object
+#Since there aren't any batch effects, we don't need to take those into account
+dds = DESeqDataSetFromMatrix(data_mat, experimental_metadata, ~ condition)
+colnames(dds) = colnames(data_mat)
+
+#Estimates the size factors using the "median ratio method" described by Equation 5 in Anders and Huber (2010)
+dds <- estimateSizeFactors(dds) 
+
+#This function obtains dispersion estimates for a count data set
+dds <- estimateDispersions(dds)
+
+#This function transforms the count data to the log2 scale in a way which minimizes differences between samples for rows with small counts
+rld <- rlog(dds)
+```
+
+## All samples {.tabset}
+### Sample clustering
+```{r hclust}
+sampleDists <- dist(t(assay(rld)))
+plot(hclust(sampleDists))
+```
+
+### Correlation Heatmap
+```{r}
+annot = dplyr::select(experimental_metadata, condition)
+row.names(annot) = experimental_metadata$sample_id
+rld %>%
+  assay() %>%
+  cor() %>%
+  pheatmap(color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdBu")))(100),
+           annotation = annot,
+           annotation_colors = list(condition = c(Control = "#BF3100", OKSM = "#E9B44C", 
+                                                  Senolytic = "#1B998B", Senolytic_OKSM = "#5D576B")),
+           cluster_rows = TRUE,
+           cluster_cols = T,
+           cellwidth = 13,
+           cellheight = 13)
+```
+
+### PCA
+```{r pca_samples, results='hide'}
+ntop = 500
+rv <- rowVars(assay(rld))
+select <- order(rv, decreasing = TRUE)[seq_len(min(ntop, length(rv)))]
+pca = prcomp(t(assay(rld)[select,]))
+percentVar <- pca$sdev^2/sum(pca$sdev^2)
+
+pca_data <- plotPCA(rld, intgroup = c("condition", "replicate"), returnData=TRUE)
+percentVar <- round(100 * attr(pca_data, "percentVar"), digits=2)
+ggplot(pca_data, aes(PC1, PC2, color=condition, shape=replicate)) + geom_point(size=3) +
+  scale_x_continuous(paste0("PC1: ",percentVar[1],"% variance")) +
+  scale_y_continuous(paste0("PC2: ",percentVar[2],"% variance")) + 
+  coord_fixed() + theme_classic() + geom_text(data = pca_data, aes(PC1,PC2, label = name), hjust = 1.2)
+
+```
+
+
+```{r remove rRNA, include=FALSE}
+dds = dds[!(row.names(counts(dds)) %in% ensembl.genes$gene_id[ensembl.genes$gene_biotype %in% c("rRNA", "snoRNA", "snRNA")]),]
+dds = dds[rowSums(counts(dds)) > 0,]
+```
+
+## Removing TPM Outliers
+```{r tpm}
+effective_lengths = matrix(0, ncol=length(experimental_metadata$sample_id), nrow=17714)
+colnames(effective_lengths)= experimental_metadata$sample_id
+for( i in experimental_metadata$sample_id){
+  effective_lengths[,i] = read.table(paste("data/ipsc/", i, ".genes.results",sep=""), sep="\t", header=TRUE)$effective_length
+}
+row.names(effective_lengths) = read.table(paste("data/ipsc/", i, ".genes.results",sep=""), sep="\t", header=TRUE)$gene_id
+
+effective_lengths = rowMeans(effective_lengths[row.names(counts(dds)),])
+ncrpk = counts(dds) / (effective_lengths / 1000)
+ncrpk = apply(ncrpk, c(1,2), function(x){if(is.nan(x)){0}else{x}})
+ncrpk = apply(ncrpk, c(1,2), function(x){if(is.infinite(x)){0}else{x}})
+ncscalingfactor = colSums(ncrpk) / 1e6
+nctpm = sweep(ncrpk, 2, ncscalingfactor, "/")
+
+nctpm.melt = melt(nctpm)
+ggplot(nctpm.melt, aes(x=Var2, y=value)) + geom_boxplot() + theme_classic() + theme(axis.text.x = element_text(angle = 90, colour="black", hjust = 1)) + scale_x_discrete("Sample") + scale_y_continuous("TPM")
+```
+
+```{r}
+tpm.threshold = 20000
+test.tpm = apply(nctpm, 1, function(x){ any(x> tpm.threshold) })
+ensembl.genes[names(test.tpm[test.tpm])] %>%
+  as.data.frame() %>%
+  datatable(options = list(scrollX = TRUE))
+```
+```{r, include=FALSE}
+dds = dds[!(row.names(counts(dds)) %in% ensembl.genes[names(test.tpm[test.tpm])]$gene_id),]
+dds <- estimateSizeFactors(dds)
+dds <- estimateDispersions(dds)
+rld <- rlog(dds)
+```
+
+# Differential Expression Analysis
+```{r, include=FALSE}
+## Removing lowly expressed genes, only to be done once at the start of the differential expression step
+filter = apply(counts(dds, normalized=TRUE), 1, function(x){ mean(x) >= 10 })
+dds = dds[filter, ]
+```
+
+## Wald Tests {.tabset}
+```{r, include=FALSE}
+dds_wald = nbinomWaldTest(dds)
+lfc.threshold = log2(1.5)
+if(!dir.exists("output/ipsc")){
+  dir.create(file.path(getwd(),"output/ipsc"), recursive = TRUE)
+}
+output_dir <- "output/ipsc/"
+```
+
+### OKSM vs Control(TdTom)
+```{r}
+generate_de_section(dds_wald, "OKSM", "Control")
+```
+
+### Senolytic vs Control(TdTom)
+```{r}
+generate_de_section(dds_wald, "Senolytic", "Control")
+```
+
+### Senolytic OKSM vs Control(TdTom)
+```{r}
+generate_de_section(dds_wald, "Senolytic_OKSM", "Control")
+```
+
+### OKSM vs Senolytic
+```{r}
+generate_de_section(dds_wald, "OKSM", "Senolytic")
+```
+
+### OKSM vs Senolytic_OKSM
+```{r}
+generate_de_section(dds_wald, "OKSM", "Senolytic_OKSM")
+```
+
+### Senolytic vs Senolytic_OKSM
+```{r}
+generate_de_section(dds_wald, "Senolytic", "Senolytic_OKSM")
+```
+
+
+## Likelihood Ratio Test
+```{r}
+dds_LRT = nbinomLRT(dds, reduced = ~1)
+res = results(dds_LRT)
+
+res$gene_biotype= ensembl.genes$gene_biotype[match(row.names(res), ensembl.genes$gene_id)]
+res$external_gene_name= ensembl.genes$external_gene_name[match(row.names(res), ensembl.genes$gene_id)]
+
+hist(res$pvalue)
+```
+**Number of significant genes (padj < 0.1):**
+```{r}
+sum(res$padj < 0.1, na.rm=T)
+```
+
+```{r extract significant transcripts, include=FALSE}
+## Get significant genes by 10% FDR 
+sig_padj_genes <- res[!is.na(res$padj),]
+sig_padj_genes <- sig_padj_genes[sig_padj_genes$padj < 0.1,]
+
+## Get the rld for all differentially expressed genes & rld for significant genes
+rld <- rlog(dds_LRT)
+significant_rld <- rld[rownames(sig_padj_genes)]
+```
+
+```{r for getting granges for motif enrichment analysis, include=FALSE}
+assay_df = assay(significant_rld)
+
+## Differentially expressed genes
+sig_de_granges <- ensembl.genes[rownames(assay_df)]
+sig_de_granges <- promoters(sig_de_granges, upstream= 500, downstream = 500, use.names = TRUE)
+
+## All expressed genes
+sig_all_granges <- ensembl.genes[rownames(counts(dds)),]
+sig_all_granges <- promoters(sig_all_granges, upstream = 500, downstream = 500, use.names = TRUE)
+
+saveRDS(sig_de_granges, paste0(output_dir,"mea_ensembl_sig.rds"))
+saveRDS(sig_all_granges, paste0(output_dir,"mea_ensembl_all.rds"))
+```
+
+# Visualisation
+```{r z-score transformation}
+# assay(x) to access the count data
+sig_mat_rld = assay(significant_rld)
+
+# The apply function swaps the rows to samples and columns to genes -- the standard is the other way around: samples in cols and genes in rows, hence the transpose function
+zscores = t(apply(sig_mat_rld, 1, function(x){ (x - mean(x)) / sd(x) }))
+```
+
+```{r heatmap annotation, include=FALSE}
+## >> !! NOTE !! The annotation needs to be in the correct order as the condition in the metadata.txt
+annotation = data.frame(Condition = rep(c("Control","OKSM", "Senolytic", "Senolyic_OKSM"),
+                                            c(3, 3, 3, 3)))
+
+row.names(annotation) = experimental_metadata$sample_id 
+anno_colours = list(Condition = c(Control = "#BF3100", OKSM = "#E9B44C", Senolytic = "#1B998B", Senolyic_OKSM = "#5D576B"))
+```
+
+## Elbow Plot
+```{r}
+foo = as(zscores, "matrix")
+bar = sapply(1:10, function(x){kmeans(foo, centers=x)$tot.withinss})
+plot(bar, type="l")
+```
+
+## Heatmap
+```{r}
+pam_clust <- generate_data(zscores, 7, "pam")
+# pam_clust <- as.data.frame(pam_clust)
+# pam_clust$Cluster <- factor(pam_clust$Cluster, levels = c(5,4,3,1,2,6))
+# pam_clust <- pam_clust[order(pam_clust$Cluster),]
+
+pheatmap(pam_clust[,1:(ncol(pam_clust)-1)],
+         color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdBu")))(100),
+         fontsize_row = 5.5,
+         annotation_col = annotation,
+         annotation_colors = anno_colours,
+         cluster_rows = FALSE,
+         cluster_cols = FALSE)
+```
+
+## Table of Genes
+```{r}
+pam_clust_df <- pam_clust %>%
+  as.data.frame() %>%
+  mutate(gene_name = ensembl.genes[rownames(.),]$external_gene_name) %>%
+  dplyr::select(gene_name, Cluster) %>%
+  dplyr::rename("Gene Name" = gene_name)
+datatable(pam_clust_df, options = list(scrollX = TRUE), class = "white-space: nowrap")
+```
+
+```{r, include = FALSE}
+dds_df <- res %>%
+  as.data.frame() %>%
+  mutate(Cluster = pam_clust_df$Cluster[match(rownames(res), rownames(pam_clust_df))]) %>%
+  dplyr::select(pvalue, padj, gene_biotype, external_gene_name, Cluster)
+write.table(dds_df, "output/ipsc/clusters.csv", row.names = TRUE, col.names = TRUE)
+```
+
+## Number of Genes
+```{r}
+c1 <- pam_clust_df[pam_clust_df$Cluster == 1, ] %>%
+  dplyr::select(-Cluster)
+saveRDS(c1, "output/ipsc/ipsc_c1.rds")
+
+c2 <- pam_clust_df[pam_clust_df$Cluster == 2, ] %>%
+  dplyr::select(-Cluster)
+saveRDS(c2, "output/ipsc/ipsc_c2.rds")
+
+c3 <- pam_clust_df[pam_clust_df$Cluster == 3, ] %>%
+  dplyr::select(-Cluster)
+saveRDS(c3, "output/ipsc/ipsc_c3.rds")
+
+c4 <- pam_clust_df[pam_clust_df$Cluster == 4, ] %>%
+  dplyr::select(-Cluster)
+saveRDS(c4, "output/ipsc/ipsc_c4.rds")
+
+c5 <- pam_clust_df[pam_clust_df$Cluster == 5, ] %>%
+  dplyr::select(-Cluster)
+saveRDS(c5, "output/ipsc/ipsc_c5.rds")
+
+c6 <- pam_clust_df[pam_clust_df$Cluster == 6, ] %>%
+  dplyr::select(-Cluster)
+saveRDS(c6, "output/ipsc/ipsc_c6.rds")
+
+c7 <- pam_clust_df[pam_clust_df$Cluster == 7, ] %>%
+  dplyr::select(-Cluster)
+saveRDS(c7, "output/ipsc/ipsc_c7.rds")
+
+data.frame(Cluster = c("Cluster 1", "Cluster 2", "Cluster 3", "Cluster 4", 
+                       "Cluster 5", "Cluster 6", "Cluster 7", "Total"),
+                        Number_of_genes = c(nrow(c1), nrow(c2), nrow(c3), nrow(c4),
+                                            nrow(c5), nrow(c6), nrow(c7),
+                                            sum(c(nrow(c1),nrow(c2),nrow(c3),nrow(c4),
+                                                  nrow(c5),nrow(c6),nrow(c7)))))
+```
+
+## Silhouette Plot
+```{r}
+## Checking the stability of clusters
+#fviz_nbclust(zscores, kmeans, method = "silhouette")
+set.seed(2)
+dd = as.dist((1 - cor(t(zscores)))/2)
+pam = pam(dd, 7, diss = TRUE)
+sil = silhouette(pam$clustering, dd)
+plot(sil, border=NA, main = "Silhouette Plot for 7 Clusters")
+```
+
+# Functional Enrichments
+```{r}
+#listEnrichrSites()
+setEnrichrSite("FlyEnrichr")
+dbs <- listEnrichrDbs()
+to_check <- c("GO_Biological_Process_2018", "KEGG_2019")
+```
+
+## Cluster 1 {.tabset}
+```{r, include=FALSE}
+c1_genename = c1$`Gene Name`
+eresList <- enrichr(c1_genename, databases = to_check)
+```
+
+### GO_Biological_Process_2018
+```{r c1_go_7, fig.width=8}
+eresList$GO_Biological_Process_2018 %>%
+  plot_enrichr("GO_Biological_Process_2018")
+datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+```
+
+### KEGG_2019
+```{r c1_kegg_7, fig.width=8}
+eresList$KEGG_2019 %>%
+  plot_enrichr("KEGG_2019") 
+datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+```
+
+## Cluster 2 {.tabset}
+```{r, include=FALSE}
+c2_genename = c2$`Gene Name`
+eresList <- enrichr(c2_genename, databases = to_check)
+```
+
+### GO_Biological_Process_2018
+```{r c2_go_7, fig.width=8}
+eresList$GO_Biological_Process_2018 %>%
+  plot_enrichr("GO_Biological_Process_2018")
+datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+```
+
+### KEGG_2019
+```{r c2_kegg_7, fig.width=8}
+eresList$KEGG_2019 %>%
+  plot_enrichr("KEGG_2019") 
+datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+```
+
+## Cluster 3 {.tabset}
+```{r, include=FALSE}
+c3_genename = c3$`Gene Name`
+eresList <- enrichr(c3_genename, databases = to_check)
+```
+
+### GO_Biological_Process_2018
+```{r c3_go_7, fig.width=8}
+eresList$GO_Biological_Process_2018 %>%
+  plot_enrichr("GO_Biological_Process_2018")
+datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+```
+
+### KEGG_2019
+```{r c3_kegg_7, fig.width=8}
+eresList$KEGG_2019 %>%
+  plot_enrichr("KEGG_2019") 
+datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+```
+
+## Cluster 4 {.tabset}
+```{r, include=FALSE}
+c4_genename = c4$`Gene Name`
+eresList <- enrichr(c4_genename, databases = to_check)
+```
+
+### GO_Biological_Process_2018
+```{r c4_go_7, fig.width=8}
+eresList$GO_Biological_Process_2018 %>%
+  plot_enrichr("GO_Biological_Process_2018")
+datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+```
+
+### KEGG_2019
+```{r c4_kegg_7, fig.width=8}
+eresList$KEGG_2019 %>%
+  plot_enrichr("KEGG_2019") 
+datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+```
+
+## Cluster 5 {.tabset}
+```{r, include=FALSE}
+c5_genename = c5$`Gene Name`
+eresList <- enrichr(c5_genename, databases = to_check)
+```
+
+### GO_Biological_Process_2018
+```{r c5_go_7, fig.width=8}
+eresList$GO_Biological_Process_2018 %>%
+  plot_enrichr("GO_Biological_Process_2018")
+datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+```
+
+### KEGG_2019
+```{r c5_kegg_7, fig.width=8}
+eresList$KEGG_2019 %>%
+  plot_enrichr("KEGG_2019") 
+datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+```
+
+## Cluster 6 {.tabset}
+```{r, include=FALSE}
+c6_genename = c6$`Gene Name`
+eresList <- enrichr(c6_genename, databases = to_check)
+```
+
+### GO_Biological_Process_2018
+```{r c6_go_7, fig.width=8}
+eresList$GO_Biological_Process_2018 %>%
+  plot_enrichr("GO_Biological_Process_2018")
+datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+```
+
+### KEGG_2019
+```{r c6_kegg_7, fig.width=8}
+eresList$KEGG_2019 %>%
+  plot_enrichr("KEGG_2019") 
+datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+```
+
+## Cluster 7 {.tabset}
+```{r, include=FALSE}
+c7_genename = c7$`Gene Name`
+eresList <- enrichr(c7_genename, databases = to_check)
+```
+
+### GO_Biological_Process_2018
+```{r c7_go_7, fig.width=8}
+eresList$GO_Biological_Process_2018 %>%
+  plot_enrichr("GO_Biological_Process_2018")
+datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+```
+
+### KEGG_2019
+```{r c7_kegg_7, fig.width=8}
+eresList$KEGG_2019 %>%
+  plot_enrichr("KEGG_2019") 
+datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+```
+
+# Session Info
+```{r}
+sessionInfo()
+```
