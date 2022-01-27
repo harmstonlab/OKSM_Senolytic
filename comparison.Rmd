@@ -1,5 +1,5 @@
 ---
-title: "RNASeq Comparison between Ubiquitous and iPSC Datasets"
+title: "RNASeq Comparison between Ubiquitous and ISC Datasets"
 author: Ellora Chua
 output: 
   html_document:
@@ -46,7 +46,7 @@ library(clusterProfiler)
 ```{r, include=FALSE}
 ensembl.genes <- readRDS("output/ubiquitous/ensembl.genes.rds")
 ubiq_pam_clust <- readRDS("output/ubiquitous/pam_clust.rds")
-ipsc_pam_clust <- readRDS("output/ipsc/pam_clust.rds")
+isc_pam_clust <- readRDS("output/isc/pam_clust.rds")
 if(!dir.exists("output/comparison/")){
   dir.create("output/comparison", recursive = TRUE)
 }
@@ -134,9 +134,9 @@ data.frame(Cluster = c("Cluster 1", "Cluster 2", "Cluster 3", "Cluster 4", "Clus
                                                   nrow(ubi_c6),nrow(ubi_c7)))))
 ```
 
-## iPSC
+## ISC
 ```{r, include=FALSE}
-experimental_metadata <- read.delim("data/ipsc/metadata.txt", sep=",", header=TRUE, stringsAsFactors=FALSE)
+experimental_metadata <- read.delim("data/isc/metadata.txt", sep=",", header=TRUE, stringsAsFactors=FALSE)
 annotation = data.frame(Condition = rep(c("Control","OKSM", "Senolytic", "Senolyic_OKSM"),
                                             c(3, 3, 3, 3)))
 
@@ -145,7 +145,7 @@ anno_colours = list(Condition = c(Control = "#BF3100", OKSM = "#E9B44C", Senolyt
 ```
 
 ```{r}
-pheatmap(ipsc_pam_clust[,1:(ncol(ipsc_pam_clust)-1)],
+pheatmap(isc_pam_clust[,1:(ncol(isc_pam_clust)-1)],
          color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdBu")))(100),
          fontsize_row = 5.5,
          annotation_col = annotation,
@@ -156,40 +156,40 @@ pheatmap(ipsc_pam_clust[,1:(ncol(ipsc_pam_clust)-1)],
 ```
 
 ```{r}
-ipsc_pam_clust_df <- ipsc_pam_clust %>%
+isc_pam_clust_df <- isc_pam_clust %>%
   as.data.frame() %>%
   mutate(gene_name = ensembl.genes[rownames(.),]$external_gene_name)
-datatable(ipsc_pam_clust_df, options = list(scrollX = TRUE), class = "white-space: nowrap")
+datatable(isc_pam_clust_df, options = list(scrollX = TRUE), class = "white-space: nowrap")
 ```
 
 ```{r}
-ipsc_c1 <- ipsc_pam_clust_df[ipsc_pam_clust_df$Cluster == 1, ] %>%
+isc_c1 <- isc_pam_clust_df[isc_pam_clust_df$Cluster == 1, ] %>%
   dplyr::select(-Cluster)
 
-ipsc_c2 <- ipsc_pam_clust_df[ipsc_pam_clust_df$Cluster == 2, ] %>%
+isc_c2 <- isc_pam_clust_df[isc_pam_clust_df$Cluster == 2, ] %>%
   dplyr::select(-Cluster)
 
-ipsc_c3 <- ipsc_pam_clust_df[ipsc_pam_clust_df$Cluster == 3, ] %>%
+isc_c3 <- isc_pam_clust_df[isc_pam_clust_df$Cluster == 3, ] %>%
   dplyr::select(-Cluster)
 
-ipsc_c4 <- ipsc_pam_clust_df[ipsc_pam_clust_df$Cluster == 4, ] %>%
+isc_c4 <- isc_pam_clust_df[isc_pam_clust_df$Cluster == 4, ] %>%
   dplyr::select(-Cluster)
 
-ipsc_c5 <- ipsc_pam_clust_df[ipsc_pam_clust_df$Cluster == 5, ] %>%
+isc_c5 <- isc_pam_clust_df[isc_pam_clust_df$Cluster == 5, ] %>%
   dplyr::select(-Cluster)
 
-ipsc_c6 <- ipsc_pam_clust_df[ipsc_pam_clust_df$Cluster == 6, ] %>%
+isc_c6 <- isc_pam_clust_df[isc_pam_clust_df$Cluster == 6, ] %>%
   dplyr::select(-Cluster)
 
-ipsc_c7 <- ipsc_pam_clust_df[ipsc_pam_clust_df$Cluster == 7, ] %>%
+isc_c7 <- isc_pam_clust_df[isc_pam_clust_df$Cluster == 7, ] %>%
   dplyr::select(-Cluster)
 
 data.frame(Cluster = c("Cluster 1", "Cluster 2", "Cluster 3", "Cluster 4", 
                        "Cluster 5", "Cluster 6", "Cluster 7", "Total"),
-                        Number_of_genes = c(nrow(ipsc_c1), nrow(ipsc_c2), nrow(ipsc_c3), nrow(ipsc_c4),
-                                            nrow(ipsc_c5), nrow(ipsc_c6), nrow(ipsc_c7),
-                                            sum(c(nrow(ipsc_c1),nrow(ipsc_c2),nrow(ipsc_c3),nrow(ipsc_c4),
-                                                  nrow(ipsc_c5),nrow(ipsc_c6),nrow(ipsc_c7)))))
+                        Number_of_genes = c(nrow(isc_c1), nrow(isc_c2), nrow(isc_c3), nrow(isc_c4),
+                                            nrow(isc_c5), nrow(isc_c6), nrow(isc_c7),
+                                            sum(c(nrow(isc_c1),nrow(isc_c2),nrow(isc_c3),nrow(isc_c4),
+                                                  nrow(isc_c5),nrow(isc_c6),nrow(isc_c7)))))
 ```
 
 
@@ -230,46 +230,46 @@ cluster_boxplot(ubi_c6, "Cluster 6", "TdTom", "Sen_OKSM", "OKSM")
 cluster_boxplot(ubi_c7, "Cluster 7", "TdTom", "Sen_OKSM", "OKSM")
 ```
 
-## iPSC {.tabset}
+## isc {.tabset}
 ### Cluster 1
 ```{r}
-cluster_boxplot(ipsc_c1, "Cluster 1", "Control", "SO", "O")
+cluster_boxplot(isc_c1, "Cluster 1", "Control", "SO", "O")
 ```
 
 ### Cluster 2
 ```{r}
-cluster_boxplot(ipsc_c2, "Cluster 2", "Control", "SO", "O")
+cluster_boxplot(isc_c2, "Cluster 2", "Control", "SO", "O")
 ```
 
 ### Cluster 3
 ```{r}
-cluster_boxplot(ipsc_c3, "Cluster 3", "Control", "SO", "O")
+cluster_boxplot(isc_c3, "Cluster 3", "Control", "SO", "O")
 ```
 
 ### Cluster 4
 ```{r}
-cluster_boxplot(ipsc_c4, "Cluster 4", "Control", "SO", "O")
+cluster_boxplot(isc_c4, "Cluster 4", "Control", "SO", "O")
 ```
 
 ### Cluster 5
 ```{r}
-cluster_boxplot(ipsc_c5, "Cluster 5", "Control", "SO", "O")
+cluster_boxplot(isc_c5, "Cluster 5", "Control", "SO", "O")
 ```
 
 ### Cluster 6
 ```{r}
-cluster_boxplot(ipsc_c6, "Cluster 6", "Control", "SO", "O")
+cluster_boxplot(isc_c6, "Cluster 6", "Control", "SO", "O")
 ```
 
 ### Cluster 7
 ```{r}
-cluster_boxplot(ipsc_c7, "Cluster 7", "Control", "SO", "O")
+cluster_boxplot(isc_c7, "Cluster 7", "Control", "SO", "O")
 ```
 
 #  Gene overlaps
 ## Overall
 ```{r, include=FALSE}
-venn.diagram(x=list(Ubiquitous = na.omit(rownames(pam_clust_df)), iPSC = na.omit(rownames(ipsc_pam_clust))), fill = c("#ffc93c", "#f8a488"), margin = 0.08, cat.pos = c(90,270), cat.dist = c(0.03,0.05), alpha = c(0.7, 0.7), imagetype = "png", print.mode = "raw", filename = "output/comparison/overlaps.png")
+venn.diagram(x=list(Ubiquitous = na.omit(rownames(pam_clust_df)), ISC = na.omit(rownames(isc_pam_clust_df))), fill = c("#ffc93c", "#f8a488"), margin = 0.08, cat.pos = c(90,270), cat.dist = c(0.03,0.05), alpha = c(0.7, 0.7), imagetype = "png", print.mode = "raw", filename = "output/comparison/overlaps.png")
 ```
 
 ```{r}
@@ -278,127 +278,114 @@ p <- rasterGrob(olaps, interpolate = TRUE)
 ggarrange(p)
 ```
 
-I've manipulated the heatmaps such that Clusters 1 - 5 in the ubiquitous data is the same as Clusters 1 - 7 in the iPSC dataset for easy comparison
-
-## C1 ubiquitous dataset in C1 and/or C2 of iPSC dataset
-Percentage of genes in c1 of ubiquitous dataset in c1 & c2 of iPSC dataset
+## What are these 686 genes that overlap?
 ```{r}
-denom <- c(rownames(ipsc_c1),rownames(ipsc_c2))
+overlapping_genes <- pam_clust_df[rownames(pam_clust_df) %in% rownames(isc_pam_clust_df),]
+overlapping_genes %>%
+  dplyr::select(gene_name, Cluster) %>%
+  rename("Gene Name" = gene_name) %>%
+  datatable(options = list(scrollX = TRUE))
+```
+
+## Where are they located in the ubiquitous dataset?
+```{r}
+overlapping_genes %>%
+  dplyr::select(gene_name, Cluster) %>%
+  group_by(Cluster) %>%
+  tally() %>%
+  datatable(options = list(scrollX = TRUE), caption = "Where the 686 genes are located in the ubiquitous dataset")
+```
+
+## What are these overlapping genes enriched for? {.tabset}
+```{r, include=FALSE}
+setEnrichrSite("FlyEnrichr")
+dbs <- listEnrichrDbs()
+to_check <- c("GO_Biological_Process_2018", "KEGG_2019")
+set.seed(2)
+```
+
+```{r, include=FALSE}
+olap_genenames = overlapping_genes$gene_name
+eresList <- enrichr(olap_genenames, databases = to_check)
+```
+
+### GO
+```{r}
+eresList$GO_Biological_Process_2018 %>%
+  plot_enrichr("GO_Biological_Process_2018")
+datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+```
+
+### KEGG
+```{r}
+eresList$KEGG_2019 %>%
+  plot_enrichr("KEGG_2019") 
+datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+```
+
+## Where in the ISC dataset are these 686 genes?
+```{r}
+isc_pam_clust_df[rownames(isc_pam_clust_df) %in% rownames(pam_clust_df),] %>%
+  dplyr::select(gene_name, Cluster) %>%
+  group_by(Cluster) %>%
+  tally() %>%
+  datatable(options = list(scrollX = TRUE), caption = "Where the 686 genes are located in the ISC dataset")
+```
+
+I've manipulated the heatmaps such that Clusters 1 - 5 in the ubiquitous data is the same as Clusters 1 - 7 in the ISC dataset for easy comparison
+
+## C1 ubiquitous dataset in C1 and/or C2 of ISC dataset
+Percentage of genes in c1 of ubiquitous dataset in c1 & c2 of ISC dataset
+```{r}
+denom <- c(rownames(isc_c1),rownames(isc_c2))
 sum(rownames(ubi_c1) %in% denom)/length(denom)*100
 ```
 
-Where else can we find c1 ubiquitous genes in iPSC dataset?
+Where else can we find c1 ubiquitous genes in ISC dataset?
 ```{r}
-tab <- ipsc_pam_clust_df[rownames(ubi_c1),] %>%
+tab <- isc_pam_clust_df[rownames(ubi_c1),] %>%
   drop_na %>%
   group_by(Cluster) %>%
   tally()
 tab
 ```
 
-`r sum(tab$n)` genes in Cluster 1 of the ubiquitous dataset is accounted for in the iPSC dataset. This implies that `r length(denom)-sum(tab$n)` genes in C1 of the ubiquitous dataset is not expressed or significantly differentially expressed in the iPSC dataset. 
+`r sum(tab$n)` genes in Cluster 1 of the ubiquitous dataset is accounted for in the ISC dataset. This implies that `r length(denom)-sum(tab$n)` genes in C1 of the ubiquitous dataset is not expressed or significantly differentially expressed in the ISC dataset. 
 
-## C3 ubiquitous dataset in C4 and or C5 of iPSC dataset
-Percentage of genes in c3 of ubiquitous dataset in c4 & c5 iPSC dataset
+## C3 ubiquitous dataset in C4 and or C5 of ISC dataset
+Percentage of genes in c3 of ubiquitous dataset in c4 & c5 ISC dataset
 ```{r}
-denom <- c(rownames(ipsc_c4),rownames(ipsc_c5))
+denom <- c(rownames(isc_c4),rownames(isc_c5))
 sum(rownames(ubi_c3) %in% denom)/length(denom)*100
 ```
 
-Where else can we find c3 ubiquitous genes in iPSC dataset?
+Where else can we find c3 ubiquitous genes in ISC dataset?
 ```{r}
-tab <- ipsc_pam_clust_df[rownames(ubi_c3),] %>%
+tab <- isc_pam_clust_df[rownames(ubi_c3),] %>%
   drop_na %>%
   group_by(Cluster) %>%
   tally()
 tab
 ```
 
-`r sum(tab$n)` genes in Cluster 3 of the ubiquitous dataset is accounted for in the iPSC dataset. This implies that `r length(denom)-sum(tab$n)` genes in C3 of the ubiquitous dataset is not expressed or significantly differentially expressed in the iPSC dataset. 
+`r sum(tab$n)` genes in Cluster 3 of the ubiquitous dataset is accounted for in the ISC dataset. This implies that `r length(denom)-sum(tab$n)` genes in C3 of the ubiquitous dataset is not expressed or significantly differentially expressed in the ISC dataset. 
 
-## C4 ubiquitous dataset in C6 of iPSC dataset
-Percentage of genes in c4 of ubiquitous dataset in c6 iPSC dataset
+## C4 ubiquitous dataset in C6 of ISC dataset
+Percentage of genes in c4 of ubiquitous dataset in c6 ISC dataset
 ```{r}
-sum(rownames(ubi_c4) %in% rownames(ipsc_c6))/length(rownames(ipsc_c6))*100
+sum(rownames(ubi_c4) %in% rownames(isc_c6))/length(rownames(isc_c6))*100
 ```
 
-Where else can we find c4 ubiquitous genes in iPSC dataset?
+Where else can we find c4 ubiquitous genes in ISC dataset?
 ```{r}
-tab <- ipsc_pam_clust_df[rownames(ubi_c4),] %>%
+tab <- isc_pam_clust_df[rownames(ubi_c4),] %>%
   drop_na %>%
   group_by(Cluster) %>%
   tally()
 tab
 ```
 
-`r sum(tab$n)` genes in Cluster 4 of the ubiquitous dataset is accounted for in the iPSC dataset. This implies that `r length(rownames(ipsc_c6))-sum(tab$n)` genes in C4 of the ubiquitous dataset is not expressed or significantly differentially expressed in the iPSC dataset. 
-
-
-# Summary Enrichments from compareCluster {.tabset}
-```{r, include=FALSE}
-library(ReactomePA)
-ddssva = readRDS("output/ubiquitous/ddssva.rds")
-```
-
-## Ubiquitous
-```{r}
-genes = lapply(list(c1=ubi_c1, c2=ubi_c2, c3=ubi_c3, c4=ubi_c4, c5=ubi_c5, c6=ubi_c6, c7=ubi_c7), function(i){ensembl.genes[rownames(i)]$entrezgene_id})
-bg = ensembl.genes[rownames(ddssva)]$entrezgene_id
-```
-
-```{r}
-compPathway <- compareCluster(geneCluster   = genes,
-                              fun           = "enrichGO",
-                              keyType       = "ENTREZID",
-                              universe      = bg,
-                              ont           = "BP",
-                              OrgDb         = "org.Dm.eg.db",
-                              pvalueCutoff  = 1,
-                              qvalueCutoff  = 0.1,
-                              pAdjustMethod = "BH")
-dotplot(compPathway, showCategory = 10, title = "GO Enrichment Analysis") + theme(axis.text.y = element_text(size=8))
-```
-
-```{r}
-compPathway <- compareCluster(geneCluster   = genes,
-                              fun           = "enrichKEGG",
-                              keyType       = "ncbi-geneid",
-                              universe      = bg,
-                              organism      = "dme",
-                              pvalueCutoff  = 1,
-                              qvalueCutoff  = 0.2,
-                              pAdjustMethod = "BH")
-dotplot(compPathway, showCategory = 10, title = "KEGG Enrichment Analysis") + theme(axis.text.y = element_text(size=8))
-```
-
-
-## iPSC
-```{r}
-genes = lapply(list(c1=ipsc_c1, c2=ipsc_c2, c3=ipsc_c3, c4=ipsc_c4, c5=ipsc_c5, c6=ipsc_c6, c7=ipsc_c7), function(i){ensembl.genes[rownames(i)]$entrezgene_id})
-```
-
-```{r}
-compPathway <- compareCluster(geneCluster   = genes,
-                              fun           = "enrichGO",
-                              keyType       = "ENTREZID",
-                              ont           = "BP",
-                              OrgDb         = "org.Dm.eg.db",
-                              pvalueCutoff  = 1,
-                              qvalueCutoff  = 0.1,
-                              pAdjustMethod = "BH")
-dotplot(compPathway, showCategory = 8, title = "GO Enrichment Analysis") + theme(axis.text.y = element_text(size=8))
-```
-
-```{r}
-compPathway <- compareCluster(geneCluster   = genes,
-                              fun           = "enrichKEGG",
-                              keyType       = "ncbi-geneid",
-                              organism      = "dme",
-                              pvalueCutoff  = 1,
-                              qvalueCutoff  = 0.1,
-                              pAdjustMethod = "BH")
-dotplot(compPathway, showCategory = 10, title = "KEGG Enrichment Analysis") + theme(axis.text.y = element_text(size=8))
-```
+`r sum(tab$n)` genes in Cluster 4 of the ubiquitous dataset is accounted for in the ISC dataset. This implies that `r length(rownames(isc_c6))-sum(tab$n)` genes in C4 of the ubiquitous dataset is not expressed or significantly differentially expressed in the ISC dataset. 
 
 # Summary Enrichments from custom script {.tabset}
 ## Ubiquitous
@@ -416,7 +403,7 @@ ubi_go <- all_go %>%
 ubi_go %>%
   mutate(Term = gsub("\\([^()]*\\)", "", Term),
          Term = str_to_title(Term)) %>%
-  mutate(Cluster = factor(Cluster, levels = c("c1","c2", "c3", "c4","c5","c6","c7"))) %>%
+  mutate(Cluster = factor(Cluster, levels = c(unique(ubi_go$Cluster)))) %>%
   group_by(Cluster) %>%
   mutate(Term = factor(Term, levels = Term)) %>%
   ggplot(aes(x = Cluster, y = Term)) +
@@ -449,7 +436,7 @@ ubi_kegg <- all_kegg %>%
 ubi_kegg %>%
   mutate(Term = gsub("\\([^()]*\\)", "", Term),
          Term = str_to_title(Term)) %>%
-  mutate(Cluster = factor(Cluster, levels = c("c1","c2","c4", "c5","c6","c7"))) %>%
+  mutate(Cluster = factor(Cluster, levels = c(unique(ubi_kegg$Cluster)))) %>%
   group_by(Cluster) %>%
   mutate(Term = factor(Term, levels = Term)) %>%
   ggplot(aes(x = Cluster, y = Term)) +
@@ -466,6 +453,137 @@ ubi_kegg %>%
   theme_bw() +
   ggtitle("KEGG Enrichment Analysis")
 
+```
+
+## ISC
+```{r}
+filenames = list.files("output/isc", pattern = "_go.rds", full.names = TRUE)
+all_go = lapply(filenames, function(x){readRDS(x)})
+names(all_go) <- c("c1", "c2", "c3", "c4", "c5", "c6", "c7")
+isc_go <- all_go %>%
+  bind_rows(.id = "Cluster") %>%
+  group_by(Cluster) %>%
+  slice_min(order_by = Adjusted.P.value, n = 10)
+```
+
+```{r}
+isc_go %>%
+  mutate(Term = gsub("\\([^()]*\\)", "", Term),
+         Term = str_to_title(Term)) %>%
+  mutate(Cluster = factor(Cluster, levels = c(unique(isc_go$Cluster)))) %>%
+  group_by(Cluster) %>%
+  mutate(Term = factor(Term, levels = Term)) %>%
+  ggplot(aes(x = Cluster, y = Term)) +
+  geom_point(aes(colour = Adjusted.P.value, size = Ratio)) + 
+  ylab(NULL) + 
+  xlab("Cluster") +
+  scale_color_continuous(low="red", high="blue", guide=guide_colorbar(reverse=FALSE)) + 
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 60),
+                   limits=rev) +
+  #labs(fill = "Adjusted p-value") +
+  guides(colour = guide_colorbar(title = "Adjusted p-value", reverse = TRUE),
+         size = guide_legend(title = "Gene Ratio")) +
+  theme(axis.text.x = element_text(size=8)) +
+  theme_bw() +
+  ggtitle("GO Enrichment Analysis")
+
+```
+
+```{r}
+filenames = list.files("output/isc", pattern = "_kegg.rds", full.names = TRUE)
+all_kegg = lapply(filenames, function(x){readRDS(x)})
+names(all_kegg) <- c("c1", "c2", "c3", "c4", "c5", "c6", "c7")
+isc_kegg <- all_kegg %>%
+  bind_rows(.id = "Cluster") %>%
+  group_by(Cluster) %>%
+  slice_min(order_by = Adjusted.P.value, n = 10)
+```
+
+```{r}
+isc_kegg %>%
+  mutate(Term = gsub("\\([^()]*\\)", "", Term),
+         Term = str_to_title(Term)) %>%
+  mutate(Cluster = factor(Cluster, levels = c(unique(isc_kegg$Cluster)))) %>%
+  group_by(Cluster) %>%
+  mutate(Term = factor(Term, levels = Term)) %>%
+  ggplot(aes(x = Cluster, y = Term)) +
+  geom_point(aes(colour = Adjusted.P.value, size = Ratio)) + 
+  ylab(NULL) + 
+  xlab("Cluster") +
+  scale_color_continuous(low="red", high="blue", guide=guide_colorbar(reverse=FALSE)) + 
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 60),
+                   limits=rev) +
+  #labs(fill = "Adjusted p-value") +
+  guides(colour = guide_colorbar(title = "Adjusted p-value", reverse = TRUE),
+         size = guide_legend(title = "Gene Ratio")) +
+  theme(axis.text.x = element_text(size=8)) +
+  theme_bw() +
+  ggtitle("KEGG Enrichment Analysis")
+
+```
+
+# Summary Enrichments from compareCluster {.tabset}
+```{r, include=FALSE}
+library(ReactomePA)
+ddssva = readRDS("output/ubiquitous/ddssva.rds")
+```
+
+## Ubiquitous
+```{r}
+genes = lapply(list(c1=ubi_c1, c2=ubi_c2, c3=ubi_c3, c4=ubi_c4, c5=ubi_c5, c6=ubi_c6, c7=ubi_c7), function(i){ensembl.genes[rownames(i)]$entrezgene_id})
+bg = ensembl.genes[rownames(ddssva)]$entrezgene_id
+```
+
+```{r}
+compPathway <- compareCluster(geneCluster   = genes,
+                              fun           = "enrichGO",
+                              keyType       = "ENTREZID",
+                              ont           = "BP",
+                              OrgDb         = "org.Dm.eg.db",
+                              pvalueCutoff  = 1,
+                              qvalueCutoff  = 0.1,
+                              pAdjustMethod = "BH")
+dotplot(compPathway, showCategory = 10, title = "GO Enrichment Analysis") + theme(axis.text.y = element_text(size=8))
+```
+
+```{r}
+compPathway <- compareCluster(geneCluster   = genes,
+                              fun           = "enrichKEGG",
+                              keyType       = "ncbi-geneid",
+                              organism      = "dme",
+                              pvalueCutoff  = 1,
+                              qvalueCutoff  = 0.2,
+                              pAdjustMethod = "BH")
+dotplot(compPathway, showCategory = 10, title = "KEGG Enrichment Analysis") + theme(axis.text.y = element_text(size=8))
+```
+
+
+## ISC
+```{r}
+genes = lapply(list(c1=isc_c1, c2=isc_c2, c3=isc_c3, c4=isc_c4, c5=isc_c5, c6=isc_c6, c7=isc_c7), function(i){ensembl.genes[rownames(i)]$entrezgene_id})
+```
+
+```{r}
+compPathway <- compareCluster(geneCluster   = genes,
+                              fun           = "enrichGO",
+                              keyType       = "ENTREZID",
+                              ont           = "BP",
+                              OrgDb         = "org.Dm.eg.db",
+                              pvalueCutoff  = 1,
+                              qvalueCutoff  = 0.1,
+                              pAdjustMethod = "BH")
+dotplot(compPathway, showCategory = 8, title = "GO Enrichment Analysis") + theme(axis.text.y = element_text(size=8))
+```
+
+```{r}
+compPathway <- compareCluster(geneCluster   = genes,
+                              fun           = "enrichKEGG",
+                              keyType       = "ncbi-geneid",
+                              organism      = "dme",
+                              pvalueCutoff  = 1,
+                              qvalueCutoff  = 0.1,
+                              pAdjustMethod = "BH")
+dotplot(compPathway, showCategory = 10, title = "KEGG Enrichment Analysis") + theme(axis.text.y = element_text(size=8))
 ```
 
 # Session Info
