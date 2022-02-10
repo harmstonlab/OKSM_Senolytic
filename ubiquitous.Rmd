@@ -602,10 +602,11 @@ eresList <- enrichr(c1_genename, databases = to_check)
 ```
 
 ### GO_Biological_Process_2018
-```{r c1_go_9, fig.width=8}
+```{r c1_go_7, fig.width=8}
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c7_go.csv"), row.names = T, col.names = T)
 get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c7_go")
 ```
 
@@ -614,6 +615,7 @@ get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c7_go"
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+write.csv(eresList$KEGG_2019, paste0(output_dir,"c7_kegg.csv"), row.names = T, col.names = T)
 get_important_terms(eresList$KEGG_2019, output_dir, "ubi_c7_kegg")
 ```
 
@@ -628,6 +630,7 @@ eresList <- enrichr(c2_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c1_go.csv"), row.names = T, col.names = T)
 get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c1_go")
 ```
 
@@ -636,6 +639,7 @@ get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c1_go"
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+write.csv(eresList$KEGG_2019, paste0(output_dir,"c1_kegg.csv"), row.names = T, col.names = T)
 get_important_terms(eresList$KEGG_2019, output_dir, "ubi_c1_kegg")
 ```
 
@@ -650,6 +654,7 @@ eresList <- enrichr(c3_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c2_go.csv"), row.names = T, col.names = T)
 get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c2_go")
 ```
 
@@ -658,6 +663,7 @@ get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c2_go"
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+write.csv(eresList$KEGG_2019, paste0(output_dir,"c2_kegg.csv"), row.names = T, col.names = T)
 get_important_terms(eresList$KEGG_2019, output_dir, "ubi_c2_kegg")
 ```
 
@@ -672,6 +678,7 @@ eresList <- enrichr(c4_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c3_go.csv"), row.names = T, col.names = T)
 get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c3_go")
 ```
 
@@ -680,6 +687,7 @@ get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c3_go"
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+write.csv(eresList$KEGG_2019, paste0(output_dir,"c3_kegg.csv"), row.names = T, col.names = T)
 get_important_terms(eresList$KEGG_2019, output_dir, "ubi_c3_kegg")
 ```
 
@@ -694,6 +702,7 @@ eresList <- enrichr(c5_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c5_go.csv"), row.names = T, col.names = T)
 get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c5_go")
 ```
 
@@ -702,6 +711,7 @@ get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c5_go"
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+write.csv(eresList$KEGG_2019, paste0(output_dir,"c5_kegg.csv"), row.names = T, col.names = T)
 get_important_terms(eresList$KEGG_2019, output_dir, "ubi_c5_kegg")
 ```
 
@@ -716,6 +726,7 @@ eresList <- enrichr(c6_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c6_go.csv"), row.names = T, col.names = T)
 get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c6_go")
 ```
 
@@ -724,6 +735,7 @@ get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c6_go"
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+write.csv(eresList$KEGG_2019, paste0(output_dir,"c6_kegg.csv"), row.names = T, col.names = T)
 get_important_terms(eresList$KEGG_2019, output_dir, "ubi_c6_kegg")
 ```
 
@@ -738,6 +750,7 @@ eresList <- enrichr(c7_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c4_go.csv"), row.names = T, col.names = T)
 get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c4_go")
 ```
 
@@ -746,6 +759,7 @@ get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c4_go"
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
+write.csv(eresList$KEGG_2019, paste0(output_dir,"c4_kegg.csv"), row.names = T, col.names = T)
 get_important_terms(eresList$KEGG_2019, output_dir, "ubi_c4_kegg")
 ```
 
