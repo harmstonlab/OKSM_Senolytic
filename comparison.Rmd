@@ -31,6 +31,7 @@ library(reshape2)
 library(scales)
 library(Biostrings)
 library(BSgenome.Dmelanogaster.UCSC.dm6)
+options(connectionObserver = NULL)
 library(org.Dm.eg.db)
 library(tidyverse)
 library(pheatmap)
@@ -81,49 +82,50 @@ pheatmap(ubiq_pam_clust[,1:(ncol(ubiq_pam_clust)-1)],
 
 
 ```{r, include=FALSE}
-pam_clust_df <- as.data.frame(ubiq_pam_clust)
-pam_clust_df$gene_name <- ensembl.genes[rownames(pam_clust_df),]$external_gene_name
-pam_clust1_genes <- pam_clust_df[pam_clust_df$Cluster == 2, ] %>%
+ubi_pam_clust_df <- as.data.frame(ubiq_pam_clust)
+ubi_pam_clust_df$gene_name <- ensembl.genes[rownames(ubi_pam_clust_df),]$external_gene_name
+ubi_pam_clust1_genes <- ubi_pam_clust_df[ubi_pam_clust_df$Cluster == 2, ] %>%
   mutate(Cluster = 1)
-pam_clust2_genes <- pam_clust_df[pam_clust_df$Cluster == 3, ] %>%
+ubi_pam_clust2_genes <- ubi_pam_clust_df[ubi_pam_clust_df$Cluster == 3, ] %>%
   mutate(Cluster = 2) 
-pam_clust3_genes <- pam_clust_df[pam_clust_df$Cluster == 4, ] %>%
+ubi_pam_clust3_genes <- ubi_pam_clust_df[ubi_pam_clust_df$Cluster == 4, ] %>%
   mutate(Cluster = 3)
-pam_clust4_genes <- pam_clust_df[pam_clust_df$Cluster == 7, ] %>%
+ubi_pam_clust4_genes <- ubi_pam_clust_df[ubi_pam_clust_df$Cluster == 7, ] %>%
   mutate(Cluster = 4)
-pam_clust5_genes <- pam_clust_df[pam_clust_df$Cluster == 5, ]
-pam_clust6_genes <- pam_clust_df[pam_clust_df$Cluster == 6, ]
-pam_clust7_genes <- pam_clust_df[pam_clust_df$Cluster == 1, ] %>%
+ubi_pam_clust5_genes <- ubi_pam_clust_df[ubi_pam_clust_df$Cluster == 5, ]
+ubi_pam_clust6_genes <- ubi_pam_clust_df[ubi_pam_clust_df$Cluster == 6, ]
+ubi_pam_clust7_genes <- ubi_pam_clust_df[ubi_pam_clust_df$Cluster == 1, ] %>%
   mutate(Cluster = 7)
-pam_clust_df = rbind(pam_clust1_genes, pam_clust2_genes, pam_clust3_genes, pam_clust4_genes, pam_clust5_genes, pam_clust6_genes,pam_clust7_genes)
+ubi_pam_clust_df = rbind(ubi_pam_clust1_genes, ubi_pam_clust2_genes, ubi_pam_clust3_genes, 
+                         ubi_pam_clust4_genes, ubi_pam_clust5_genes, ubi_pam_clust6_genes, ubi_pam_clust7_genes)
 ```
 
 ```{r}
-pam_clust_df %>% 
+ubi_pam_clust_df %>% 
   dplyr::select(gene_name, Cluster) %>%
   datatable(options = list(scrollX = TRUE), class = "white-space: nowrap")
 ```
 
 ```{r}
-ubi_c1 <- pam_clust_df[pam_clust_df$Cluster == 1, ] %>%
+ubi_c1 <- ubi_pam_clust_df[ubi_pam_clust_df$Cluster == 1, ] %>%
   dplyr::select(-Cluster)
 
-ubi_c2 <- pam_clust_df[pam_clust_df$Cluster == 2, ] %>%
+ubi_c2 <- ubi_pam_clust_df[ubi_pam_clust_df$Cluster == 2, ] %>%
   dplyr::select(-Cluster)
 
-ubi_c3 <- pam_clust_df[pam_clust_df$Cluster == 3, ] %>%
+ubi_c3 <- ubi_pam_clust_df[ubi_pam_clust_df$Cluster == 3, ] %>%
   dplyr::select(-Cluster)
 
-ubi_c4 <- pam_clust_df[pam_clust_df$Cluster == 4, ] %>%
+ubi_c4 <- ubi_pam_clust_df[ubi_pam_clust_df$Cluster == 4, ] %>%
   dplyr::select(-Cluster)
 
-ubi_c5 <- pam_clust_df[pam_clust_df$Cluster == 5, ] %>%
+ubi_c5 <- ubi_pam_clust_df[ubi_pam_clust_df$Cluster == 5, ] %>%
   dplyr::select(-Cluster)
 
-ubi_c6 <- pam_clust_df[pam_clust_df$Cluster == 6, ] %>%
+ubi_c6 <- ubi_pam_clust_df[ubi_pam_clust_df$Cluster == 6, ] %>%
   dplyr::select(-Cluster)
 
-ubi_c7 <- pam_clust_df[pam_clust_df$Cluster == 7, ] %>%
+ubi_c7 <- ubi_pam_clust_df[ubi_pam_clust_df$Cluster == 7, ] %>%
   dplyr::select(-Cluster)
 
 data.frame(Cluster = c("Cluster 1", "Cluster 2", "Cluster 3", "Cluster 4", "Cluster 5", 
@@ -269,7 +271,7 @@ cluster_boxplot(isc_c7, "Cluster 7", "Control", "SO", "O")
 #  Gene overlaps
 ## Overall
 ```{r, include=FALSE}
-venn.diagram(x=list(Ubiquitous = na.omit(rownames(pam_clust_df)), ISC = na.omit(rownames(isc_pam_clust_df))), fill = c("#ffc93c", "#f8a488"), margin = 0.08, cat.pos = c(90,270), cat.dist = c(0.03,0.05), alpha = c(0.7, 0.7), imagetype = "png", print.mode = "raw", filename = "output/comparison/overlaps.png")
+venn.diagram(x=list(Ubiquitous = na.omit(rownames(ubi_pam_clust_df)), ISC = na.omit(rownames(isc_pam_clust_df))), fill = c("#ffc93c", "#f8a488"), margin = 0.08, cat.pos = c(180,180), cat.dist = c(0.03,0.05), alpha = c(0.7, 0.7), imagetype = "png", print.mode = "raw", filename = "output/comparison/overlaps.png")
 ```
 
 ```{r}
@@ -280,7 +282,7 @@ ggarrange(p)
 
 ## What are these 686 genes that overlap?
 ```{r}
-overlapping_genes <- pam_clust_df[rownames(pam_clust_df) %in% rownames(isc_pam_clust_df),]
+overlapping_genes <- ubi_pam_clust_df[rownames(ubi_pam_clust_df) %in% rownames(isc_pam_clust_df),]
 overlapping_genes %>%
   dplyr::select(gene_name, Cluster) %>%
   rename("Gene Name" = gene_name) %>%
@@ -291,6 +293,7 @@ overlapping_genes %>%
 ```{r}
 overlapping_genes %>%
   dplyr::select(gene_name, Cluster) %>%
+  rename("Gene Name" = gene_name) %>%
   group_by(Cluster) %>%
   tally() %>%
   datatable(options = list(scrollX = TRUE), caption = "Where the 686 genes are located in the ubiquitous dataset")
@@ -325,7 +328,7 @@ datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: n
 
 ## Where in the ISC dataset are these 686 genes?
 ```{r}
-isc_pam_clust_df[rownames(isc_pam_clust_df) %in% rownames(pam_clust_df),] %>%
+isc_pam_clust_df[rownames(isc_pam_clust_df) %in% rownames(ubi_pam_clust_df),] %>%
   dplyr::select(gene_name, Cluster) %>%
   group_by(Cluster) %>%
   tally() %>%
@@ -338,7 +341,7 @@ I've manipulated the heatmaps such that Clusters 1 - 5 in the ubiquitous data is
 Percentage of genes in c1 of ubiquitous dataset in c1 & c2 of ISC dataset
 ```{r}
 denom <- c(rownames(isc_c1),rownames(isc_c2))
-sum(rownames(ubi_c1) %in% denom)/length(denom)*100
+sum(rownames(ubi_c1) %in% denom)/length(rownames(ubi_c1))*100
 ```
 
 Where else can we find c1 ubiquitous genes in ISC dataset?
@@ -356,7 +359,7 @@ tab
 Percentage of genes in c3 of ubiquitous dataset in c4 & c5 ISC dataset
 ```{r}
 denom <- c(rownames(isc_c4),rownames(isc_c5))
-sum(rownames(ubi_c3) %in% denom)/length(denom)*100
+sum(rownames(ubi_c3) %in% denom)/length(rownames(ubi_c3))*100
 ```
 
 Where else can we find c3 ubiquitous genes in ISC dataset?
@@ -373,7 +376,7 @@ tab
 ## C4 ubiquitous dataset in C6 of ISC dataset
 Percentage of genes in c4 of ubiquitous dataset in c6 ISC dataset
 ```{r}
-sum(rownames(ubi_c4) %in% rownames(isc_c6))/length(rownames(isc_c6))*100
+sum(rownames(ubi_c4) %in% rownames(isc_c6))/length(rownames(ubi_c4))*100
 ```
 
 Where else can we find c4 ubiquitous genes in ISC dataset?
