@@ -381,7 +381,7 @@ eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
 write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c1_go.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c1_go")
+get_wanted_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c1_go", c("regulation of mitotic cell cycle (GO:0007346)","mitotic cytokinesis (GO:0000281)", "regulation of cell migration (GO:0030334)"))
 ```
 
 ### KEGG_2019
@@ -390,7 +390,7 @@ eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
 write.csv(eresList$KEGG_2019, paste0(output_dir,"c1_kegg.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$KEGG_2019, output_dir, "isc_c1_kegg")
+get_wanted_terms(eresList$KEGG_2019, output_dir, "isc_c1_kegg", c("DNA replication", "Hippo signaling pathway", "Apoptosis", "FoxO signaling pathway"))
 
 ```
 
@@ -406,7 +406,7 @@ eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
 write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c2_go.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c2_go")
+get_wanted_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c2_go", c("cellular response to topologically incorrect protein (GO:0035967)", "response to unfolded protein (GO:0006986)"))
 
 ```
 
@@ -416,7 +416,7 @@ eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
 write.csv(eresList$KEGG_2019, paste0(output_dir,"c2_kegg.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$KEGG_2019, output_dir, "isc_c2_kegg")
+get_wanted_terms(eresList$KEGG_2019, output_dir, "isc_c2_kegg", c("Toll and Imd signaling pathway", "Lysosome"))
 
 ```
 
@@ -432,7 +432,7 @@ eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
 write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c3_go.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c3_go")
+get_wanted_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c3_go", c("proteolysis (GO:0006508)", "fatty acid catabolic process (GO:0009062)"))
 
 ```
 
@@ -442,7 +442,7 @@ eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
 write.csv(eresList$KEGG_2019, paste0(output_dir,"c3_kegg.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$KEGG_2019, output_dir, "isc_c3_kegg")
+get_wanted_terms(eresList$KEGG_2019, output_dir, "isc_c3_kegg", c("Peroxisome", "Fatty acid degradation"))
 
 ```
 
@@ -458,7 +458,7 @@ eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
 write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c4_go.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c4_go")
+get_wanted_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c4_go", c("ribosome biogenesis (GO:0042254)", "rRNA processing (GO:0006364)"))
 
 ```
 
@@ -468,7 +468,7 @@ eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
 write.csv(eresList$KEGG_2019, paste0(output_dir,"c4_kegg.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$KEGG_2019, output_dir, "isc_c4_kegg")
+get_wanted_terms(eresList$KEGG_2019, output_dir, "isc_c4_kegg", c("Oxidative phosphorylation"))
 
 ```
 
@@ -484,7 +484,7 @@ eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
 write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c5_go.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c5_go")
+get_wanted_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c5_go", c("translation (GO:0006412)", "gene expression (GO:0010467)"))
 
 ```
 
@@ -494,7 +494,7 @@ eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
 write.csv(eresList$KEGG_2019, paste0(output_dir,"c5_kegg.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$KEGG_2019, output_dir, "isc_c5_kegg")
+get_wanted_terms(eresList$KEGG_2019, output_dir, "isc_c5_kegg", c("Ribosome", "Apoptosis", "Wnt signaling pathway", "FoxO signaling pathway", "MAPK signaling pathway"))
 
 ```
 
@@ -510,7 +510,7 @@ eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
 write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c6_go.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c6_go")
+get_wanted_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c6_go", c("regulation of cell proliferation (GO:0042127)", ""))
 
 ```
 
@@ -520,7 +520,7 @@ eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
 write.csv(eresList$KEGG_2019, paste0(output_dir,"c6_kegg.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$KEGG_2019, output_dir, "isc_c6_kegg")
+get_wanted_terms(eresList$KEGG_2019, output_dir, "isc_c6_kegg", c("Apoptosis", "Notch signaling pathway", "Wnt signaling pathway", "Hedgehog signaling pathway"))
 
 ```
 
@@ -536,8 +536,7 @@ eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
 write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c7_go.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c7_go")
-
+get_wanted_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c7_go", c("fatty-acyl-CoA metabolic process (GO:0035337)", "lipid biosynthetic process (GO:0008610)"))
 ```
 
 ### KEGG_2019
@@ -545,8 +544,8 @@ get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c7_go"
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-get_important_terms_rds(eresList$KEGG_2019, output_dir, "isc_c7_kegg")
-c7_kegg <- get_important_terms(eresList$KEGG_2019)
+write.csv(eresList$KEGG_2019, paste0(output_dir,"c7_kegg.csv"), row.names = T, col.names = T)
+get_wanted_terms(eresList$KEGG_2019, output_dir, "isc_c7_kegg", c("Toll and Imd signaling pathway", "Peroxisome", "Oxidative phosphorylation"))
 ```
 
 # Session Info

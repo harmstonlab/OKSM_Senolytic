@@ -606,8 +606,8 @@ eresList <- enrichr(c1_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c7_go.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c7_go")
+write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c1_go.csv"), row.names = T, col.names = T)
+get_wanted_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c1_go", c("mitotic cytokinesis (GO:0000281)", "DNA replication (GO:0006260)"))
 ```
 
 ### KEGG_2019
@@ -615,8 +615,8 @@ get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c7_go"
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-write.csv(eresList$KEGG_2019, paste0(output_dir,"c7_kegg.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$KEGG_2019, output_dir, "ubi_c7_kegg")
+write.csv(eresList$KEGG_2019, paste0(output_dir,"c1_kegg.csv"), row.names = T, col.names = T)
+get_wanted_terms(eresList$KEGG_2019, output_dir, "ubi_c1_kegg", c("Base excision repair", "FoxO signaling pathway"))
 ```
 
 ## Cluster 2 {.tabset}
@@ -630,8 +630,8 @@ eresList <- enrichr(c2_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c1_go.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c1_go")
+write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c2_go.csv"), row.names = T, col.names = T)
+get_wanted_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c2_go", c("glutathione metabolic process (GO:0006749)", "peptide metabolic process (GO:0006518)"))
 ```
 
 ### KEGG_2019
@@ -639,8 +639,8 @@ get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c1_go"
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-write.csv(eresList$KEGG_2019, paste0(output_dir,"c1_kegg.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$KEGG_2019, output_dir, "ubi_c1_kegg")
+write.csv(eresList$KEGG_2019, paste0(output_dir,"c2_kegg.csv"), row.names = T, col.names = T)
+get_wanted_terms(eresList$KEGG_2019, output_dir, "ubi_c2_kegg", c("Starch and sucrose metabolism","Lysosome"))
 ```
 
 ## Cluster 3 {.tabset}
@@ -654,8 +654,8 @@ eresList <- enrichr(c3_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c2_go.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c2_go")
+write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c3_go.csv"), row.names = T, col.names = T)
+get_wanted_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c3_go", c("proteolysis (GO:0006508)"))
 ```
 
 ### KEGG_2019
@@ -663,8 +663,8 @@ get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c2_go"
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-write.csv(eresList$KEGG_2019, paste0(output_dir,"c2_kegg.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$KEGG_2019, output_dir, "ubi_c2_kegg")
+write.csv(eresList$KEGG_2019, paste0(output_dir,"c3_kegg.csv"), row.names = T, col.names = T)
+get_wanted_terms(eresList$KEGG_2019, output_dir, "ubi_c3_kegg", c("Lysosome", "Amino sugar and nucleotide sugar metabolism"))
 ```
 
 ## Cluster 4 {.tabset}
@@ -678,8 +678,8 @@ eresList <- enrichr(c4_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c3_go.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c3_go")
+write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c4_go.csv"), row.names = T, col.names = T)
+get_wanted_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c4_go", c("phagocytosis (GO:0006909)", "secretion (GO:0046903)"))
 ```
 
 ### KEGG_2019
@@ -687,8 +687,8 @@ get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c3_go"
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-write.csv(eresList$KEGG_2019, paste0(output_dir,"c3_kegg.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$KEGG_2019, output_dir, "ubi_c3_kegg")
+write.csv(eresList$KEGG_2019, paste0(output_dir,"c4_kegg.csv"), row.names = T, col.names = T)
+get_wanted_terms(eresList$KEGG_2019, output_dir, "ubi_c4_kegg", c("Pantothenate and CoA biosynthesis", "Neuroactive ligand-receptor interaction"))
 ```
 
 ## Cluster 5 {.tabset}
@@ -703,7 +703,7 @@ eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
 write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c5_go.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c5_go")
+get_wanted_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c5_go", c("translation (GO:0006412)"))
 ```
 
 ### KEGG_2019
@@ -712,7 +712,7 @@ eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
 write.csv(eresList$KEGG_2019, paste0(output_dir,"c5_kegg.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$KEGG_2019, output_dir, "ubi_c5_kegg")
+get_wanted_terms(eresList$KEGG_2019, output_dir, "ubi_c5_kegg", c("Starch and sucrose metabolism", "Ribosome"))
 ```
 
 ## Cluster 6 {.tabset}
@@ -727,7 +727,7 @@ eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
 write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c6_go.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c6_go")
+get_wanted_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c6_go", c("copper ion homeostasis (GO:0055070)", "chloride transport (GO:0006821)"))
 ```
 
 ### KEGG_2019
@@ -736,7 +736,7 @@ eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
 write.csv(eresList$KEGG_2019, paste0(output_dir,"c6_kegg.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$KEGG_2019, output_dir, "ubi_c6_kegg")
+get_wanted_terms(eresList$KEGG_2019, output_dir, "ubi_c6_kegg", c("Glutathione metabolism", "Insect hormone biosynthesis"))
 ```
 
 ## Cluster 7 {.tabset}
@@ -750,8 +750,8 @@ eresList <- enrichr(c7_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c4_go.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c4_go")
+write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c7_go.csv"), row.names = T, col.names = T)
+get_wanted_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c7_go", c("regulation of cell proliferation (GO:0042127)", "Notch signaling pathway (GO:0007219)"))
 ```
 
 ### KEGG_2019
@@ -759,8 +759,8 @@ get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c4_go"
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c4_kegg.csv"), row.names = T, col.names = T)
-get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "ubi_c4_kegg")
+write.csv(eresList$KEGG_2019, paste0(output_dir,"c7_kegg.csv"), row.names = T, col.names = T)
+get_wanted_terms(eresList$KEGG_2019, output_dir, "ubi_c7_kegg", c("Arginine and proline metabolism"))
 ```
 
 

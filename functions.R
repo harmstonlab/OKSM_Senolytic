@@ -96,12 +96,12 @@ plot_enrichr <- function(data.frame, name, showCategory = 20){
 }
 
 
-get_important_terms <- function(data.frame, output_dir, name){
+get_wanted_terms <- function(data.frame, output_dir, name, wanted_terms){
   df <- data.frame %>%
     mutate(Annotated = as.numeric(str_extract(as.character(Overlap), "\\d+$")),
            Significant = as.numeric(str_extract(as.character(Overlap), "^\\d+")),
            Ratio = Significant/Annotated) %>%
-    dplyr::filter(Adjusted.P.value < 0.1) %>%
+    dplyr::filter(Term %in% wanted_terms) %>%
     arrange(Adjusted.P.value)
     if(nrow(df) != 0) {
      saveRDS(df, paste0(output_dir,name,".rds"))
