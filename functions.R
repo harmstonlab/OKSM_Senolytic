@@ -95,7 +95,8 @@ plot_enrichr <- function(data.frame, name, showCategory = 20){
   return(plot)
 }
 
-get_important_terms_rds <- function(data.frame, output_dir, name){
+
+get_important_terms <- function(data.frame, output_dir, name){
   df <- data.frame %>%
     mutate(Annotated = as.numeric(str_extract(as.character(Overlap), "\\d+$")),
            Significant = as.numeric(str_extract(as.character(Overlap), "^\\d+")),
@@ -106,19 +107,6 @@ get_important_terms_rds <- function(data.frame, output_dir, name){
      saveRDS(df, paste0(output_dir,name,".rds"))
     }
 }
-
-get_important_terms <- function(data.frame){
-  df <- data.frame %>%
-    mutate(Annotated = as.numeric(str_extract(as.character(Overlap), "\\d+$")),
-           Significant = as.numeric(str_extract(as.character(Overlap), "^\\d+")),
-           Ratio = Significant/Annotated) %>%
-    dplyr::filter(Adjusted.P.value < 0.1) %>%
-    arrange(Adjusted.P.value)
-  if(nrow(df) != 0) {
-    return(df)
-  }
-}
-
 
 ## This function takes the cluster of interest and returns the fasta file in the stated output directory
 generate_fasta <- function(output_dir, sig_de_granges, data_frame, cluster_name){

@@ -380,9 +380,8 @@ eresList <- enrichr(c1_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-get_important_terms_rds(eresList$GO_Biological_Process_2018, output_dir, "isc_c1_go")
-c1_go <- get_important_terms(eresList$GO_Biological_Process_2018)
-
+write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c1_go.csv"), row.names = T, col.names = T)
+get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c1_go")
 ```
 
 ### KEGG_2019
@@ -390,8 +389,9 @@ c1_go <- get_important_terms(eresList$GO_Biological_Process_2018)
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-get_important_terms_rds(eresList$KEGG_2019, output_dir, "isc_c1_kegg")
-c1_kegg <- get_important_terms(eresList$KEGG_2019)
+write.csv(eresList$KEGG_2019, paste0(output_dir,"c1_kegg.csv"), row.names = T, col.names = T)
+get_important_terms(eresList$KEGG_2019, output_dir, "isc_c1_kegg")
+
 ```
 
 ## Cluster 2 {.tabset}
@@ -405,8 +405,9 @@ eresList <- enrichr(c2_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-get_important_terms_rds(eresList$GO_Biological_Process_2018, output_dir, "isc_c2_go")
-c2_go <- get_important_terms(eresList$GO_Biological_Process_2018)
+write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c2_go.csv"), row.names = T, col.names = T)
+get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c2_go")
+
 ```
 
 ### KEGG_2019
@@ -414,8 +415,9 @@ c2_go <- get_important_terms(eresList$GO_Biological_Process_2018)
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-get_important_terms_rds(eresList$KEGG_2019, output_dir, "isc_c2_kegg")
-c2_kegg <- get_important_terms(eresList$KEGG_2019)
+write.csv(eresList$KEGG_2019, paste0(output_dir,"c2_kegg.csv"), row.names = T, col.names = T)
+get_important_terms(eresList$KEGG_2019, output_dir, "isc_c2_kegg")
+
 ```
 
 ## Cluster 3 {.tabset}
@@ -429,8 +431,9 @@ eresList <- enrichr(c3_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-get_important_terms_rds(eresList$GO_Biological_Process_2018, output_dir, "isc_c3_go")
-c3_go <- get_important_terms(eresList$GO_Biological_Process_2018)
+write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c3_go.csv"), row.names = T, col.names = T)
+get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c3_go")
+
 ```
 
 ### KEGG_2019
@@ -438,8 +441,9 @@ c3_go <- get_important_terms(eresList$GO_Biological_Process_2018)
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-get_important_terms_rds(eresList$KEGG_2019, output_dir, "isc_c3_kegg")
-c3_kegg <- get_important_terms(eresList$KEGG_2019)
+write.csv(eresList$KEGG_2019, paste0(output_dir,"c3_kegg.csv"), row.names = T, col.names = T)
+get_important_terms(eresList$KEGG_2019, output_dir, "isc_c3_kegg")
+
 ```
 
 ## Cluster 4 {.tabset}
@@ -453,8 +457,9 @@ eresList <- enrichr(c4_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-get_important_terms_rds(eresList$GO_Biological_Process_2018, output_dir, "isc_c4_go")
-c4_go <- get_important_terms(eresList$GO_Biological_Process_2018)
+write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c4_go.csv"), row.names = T, col.names = T)
+get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c4_go")
+
 ```
 
 ### KEGG_2019
@@ -462,8 +467,9 @@ c4_go <- get_important_terms(eresList$GO_Biological_Process_2018)
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-get_important_terms_rds(eresList$KEGG_2019, output_dir, "isc_c4_kegg")
-c4_kegg <- get_important_terms(eresList$KEGG_2019)
+write.csv(eresList$KEGG_2019, paste0(output_dir,"c4_kegg.csv"), row.names = T, col.names = T)
+get_important_terms(eresList$KEGG_2019, output_dir, "isc_c4_kegg")
+
 ```
 
 ## Cluster 5 {.tabset}
@@ -477,8 +483,9 @@ eresList <- enrichr(c5_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-get_important_terms_rds(eresList$GO_Biological_Process_2018, output_dir, "isc_c5_go")
-c5_go <- get_important_terms(eresList$GO_Biological_Process_2018)
+write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c5_go.csv"), row.names = T, col.names = T)
+get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c5_go")
+
 ```
 
 ### KEGG_2019
@@ -486,8 +493,9 @@ c5_go <- get_important_terms(eresList$GO_Biological_Process_2018)
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-get_important_terms_rds(eresList$KEGG_2019, output_dir, "isc_c5_kegg")
-c5_kegg <- get_important_terms(eresList$KEGG_2019)
+write.csv(eresList$KEGG_2019, paste0(output_dir,"c5_kegg.csv"), row.names = T, col.names = T)
+get_important_terms(eresList$KEGG_2019, output_dir, "isc_c5_kegg")
+
 ```
 
 ## Cluster 6 {.tabset}
@@ -501,8 +509,9 @@ eresList <- enrichr(c6_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-get_important_terms_rds(eresList$GO_Biological_Process_2018, output_dir, "isc_c6_go")
-c6_go <- get_important_terms(eresList$GO_Biological_Process_2018)
+write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c6_go.csv"), row.names = T, col.names = T)
+get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c6_go")
+
 ```
 
 ### KEGG_2019
@@ -510,8 +519,9 @@ c6_go <- get_important_terms(eresList$GO_Biological_Process_2018)
 eresList$KEGG_2019 %>%
   plot_enrichr("KEGG_2019") 
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-get_important_terms_rds(eresList$KEGG_2019, output_dir, "isc_c6_kegg")
-c6_kegg <- get_important_terms(eresList$KEGG_2019)
+write.csv(eresList$KEGG_2019, paste0(output_dir,"c6_kegg.csv"), row.names = T, col.names = T)
+get_important_terms(eresList$KEGG_2019, output_dir, "isc_c6_kegg")
+
 ```
 
 ## Cluster 7 {.tabset}
@@ -525,8 +535,9 @@ eresList <- enrichr(c7_genename, databases = to_check)
 eresList$GO_Biological_Process_2018 %>%
   plot_enrichr("GO_Biological_Process_2018")
 datatable(eresList[[1]], options = list(scrollX = TRUE), class = "white-space: nowrap")
-get_important_terms_rds(eresList$GO_Biological_Process_2018, output_dir, "isc_c7_go")
-c7_go <- get_important_terms(eresList$GO_Biological_Process_2018)
+write.csv(eresList$GO_Biological_Process_2018, paste0(output_dir,"c7_go.csv"), row.names = T, col.names = T)
+get_important_terms(eresList$GO_Biological_Process_2018, output_dir, "isc_c7_go")
+
 ```
 
 ### KEGG_2019
@@ -536,71 +547,6 @@ eresList$KEGG_2019 %>%
 datatable(eresList[[2]], options = list(scrollX = TRUE), class = "white-space: nowrap")
 get_important_terms_rds(eresList$KEGG_2019, output_dir, "isc_c7_kegg")
 c7_kegg <- get_important_terms(eresList$KEGG_2019)
-```
-
-# Summary Enrichments {.tabset}
-## GO
-```{r}
-all_go = list(c1 = c1_go, c2=c2_go, c3=c3_go, c4=c4_go, c5=c5_go, c6=c6_go, c7=c7_go)
-all_go <- all_go %>%
-  bind_rows(.id = "Cluster") %>%
-  group_by(Cluster) %>%
-  slice_min(order_by = Adjusted.P.value, n = 10)
-```
-
-```{r}
-all_go %>%
-  mutate(Term = gsub("\\([^()]*\\)", "", Term),
-         Term = str_to_title(Term)) %>%
-  mutate(Cluster = factor(Cluster, levels = c(unique(all_go$Cluster)))) %>%
-  group_by(Cluster) %>%
-  mutate(Term = factor(Term, levels = Term)) %>%
-  ggplot(aes(x = Cluster, y = Term)) +
-  geom_point(aes(colour = Adjusted.P.value, size = Ratio)) + 
-  ylab(NULL) + 
-  xlab("Cluster") +
-  scale_color_continuous(low="red", high="blue", guide=guide_colorbar(reverse=FALSE)) + 
-  scale_y_discrete(labels = function(x) str_wrap(x, width = 60),
-                   limits=rev) +
-  #labs(fill = "Adjusted p-value") +
-  guides(colour = guide_colorbar(title = "Adjusted p-value", reverse = TRUE),
-         size = guide_legend(title = "Gene Ratio")) +
-  theme(axis.text.x = element_text(size=8)) +
-  theme_bw() +
-  ggtitle("GO Enrichment Analysis")
-
-```
-
-## KEGG
-```{r}
-all_kegg = list(c1 = c1_kegg, c2=c2_kegg, c3=c3_kegg, c4=c4_kegg, c5=c5_kegg, c6=c6_kegg, c7=c7_kegg)
-all_kegg <- all_kegg %>%
-  bind_rows(.id = "Cluster") %>%
-  group_by(Cluster) %>%
-  slice_min(order_by = Adjusted.P.value, n = 10)
-```
-
-```{r}
-all_kegg %>%
-  mutate(Term = gsub("\\([^()]*\\)", "", Term),
-         Term = str_to_title(Term)) %>%
-  mutate(Cluster = factor(Cluster, levels = c(unique(all_kegg$Cluster)))) %>%
-  group_by(Cluster) %>%
-  mutate(Term = factor(Term, levels = Term)) %>%
-  ggplot(aes(x = Cluster, y = Term)) +
-  geom_point(aes(colour = Adjusted.P.value, size = Ratio)) + 
-  ylab(NULL) + 
-  xlab("Cluster") +
-  scale_color_continuous(low="red", high="blue", guide=guide_colorbar(reverse=FALSE)) + 
-  scale_y_discrete(labels = function(x) str_wrap(x, width = 60),
-                   limits=rev) +
-  #labs(fill = "Adjusted p-value") +
-  guides(colour = guide_colorbar(title = "Adjusted p-value", reverse = TRUE),
-         size = guide_legend(title = "Gene Ratio")) +
-  theme(axis.text.x = element_text(size=8)) +
-  theme_bw() +
-  ggtitle("GO Enrichment Analysis")
-
 ```
 
 # Session Info

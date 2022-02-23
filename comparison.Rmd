@@ -353,7 +353,7 @@ tab <- isc_pam_clust_df[rownames(ubi_c1),] %>%
 tab
 ```
 
-`r sum(tab$n)` genes in Cluster 1 of the ubiquitous dataset is accounted for in the ISC dataset. This implies that `r length(denom)-sum(tab$n)` genes in C1 of the ubiquitous dataset is not expressed or significantly differentially expressed in the ISC dataset. 
+`r sum(tab$n)` genes in Cluster 1 of the ubiquitous dataset is accounted for in the ISC dataset. This implies that `r length(rownames(ubi_c1))-sum(tab$n)` genes in C1 of the ubiquitous dataset is not expressed or significantly differentially expressed in the ISC dataset. 
 
 ## C3 ubiquitous dataset in C4 and or C5 of ISC dataset
 Percentage of genes in c3 of ubiquitous dataset in c4 & c5 ISC dataset
@@ -371,7 +371,7 @@ tab <- isc_pam_clust_df[rownames(ubi_c3),] %>%
 tab
 ```
 
-`r sum(tab$n)` genes in Cluster 3 of the ubiquitous dataset is accounted for in the ISC dataset. This implies that `r length(denom)-sum(tab$n)` genes in C3 of the ubiquitous dataset is not expressed or significantly differentially expressed in the ISC dataset. 
+`r sum(tab$n)` genes in Cluster 3 of the ubiquitous dataset is accounted for in the ISC dataset. This implies that `r length(rownames(ubi_c3))-sum(tab$n)` genes in C3 of the ubiquitous dataset is not expressed or significantly differentially expressed in the ISC dataset. 
 
 ## C4 ubiquitous dataset in C6 of ISC dataset
 Percentage of genes in c4 of ubiquitous dataset in c6 ISC dataset
@@ -388,14 +388,14 @@ tab <- isc_pam_clust_df[rownames(ubi_c4),] %>%
 tab
 ```
 
-`r sum(tab$n)` genes in Cluster 4 of the ubiquitous dataset is accounted for in the ISC dataset. This implies that `r length(rownames(isc_c6))-sum(tab$n)` genes in C4 of the ubiquitous dataset is not expressed or significantly differentially expressed in the ISC dataset. 
+`r sum(tab$n)` genes in Cluster 4 of the ubiquitous dataset is accounted for in the ISC dataset. This implies that `r length(rownames(ubi_c4))-sum(tab$n)` genes in C4 of the ubiquitous dataset is not expressed or significantly differentially expressed in the ISC dataset. 
 
 # Summary Enrichments from custom script {.tabset}
 ## Ubiquitous
 ```{r}
 filenames = list.files("output/ubiquitous", pattern = "_go.rds", full.names = TRUE)
 all_go = lapply(filenames, function(x){readRDS(x)})
-names(all_go) <- c("c1", "c2", "c3", "c4", "c5", "c6", "c7")
+names(all_go) <- c("c1", "c2", "c4", "c5", "c6", "c7")
 ubi_go <- all_go %>%
   bind_rows(.id = "Cluster") %>%
   group_by(Cluster) %>%
@@ -428,7 +428,7 @@ ubi_go %>%
 ```{r}
 filenames = list.files("output/ubiquitous", pattern = "_kegg.rds", full.names = TRUE)
 all_kegg = lapply(filenames, function(x){readRDS(x)})
-names(all_kegg) <- c("c1", "c2", "c4", "c5", "c6", "c7")
+names(all_kegg) <- c("c1", "c4", "c5", "c6", "c7")
 ubi_kegg <- all_kegg %>%
   bind_rows(.id = "Cluster") %>%
   group_by(Cluster) %>%
