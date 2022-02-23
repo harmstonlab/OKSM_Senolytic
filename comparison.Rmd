@@ -42,6 +42,7 @@ library(enrichR)
 library(ggpubr)
 library(png)
 library(clusterProfiler)
+library(enrichplot)
 ```
 
 ```{r, include=FALSE}
@@ -313,11 +314,12 @@ terms_to_highlight_go <- eresList$GO_Biological_Process_2018 %>%
 terms_to_highlight_go %>%
   mutate(Term = gsub("\\([^()]*\\)", "", Term),
          Term = str_to_title(Term)) %>%
-  mutate(Term = factor(Term, levels = Term)) %>%
+  dplyr::arrange(Ratio) %>%
+  mutate(Term = factor(Term, levels = Term[rev(order(Ratio))])) %>%
   ggplot(aes(x = Ratio, y = Term)) +
   geom_point(aes(colour = Adjusted.P.value, size = Ratio)) + 
   ylab(NULL) + 
-  xlab("Cluster") +
+  xlab("Gene Ratio") +
   scale_color_continuous(low="red", high="blue", guide=guide_colorbar(reverse=FALSE)) + 
   scale_y_discrete(labels = function(x) str_wrap(x, width = 60),
                    limits=rev) +
@@ -326,7 +328,7 @@ terms_to_highlight_go %>%
          size = guide_legend(title = "Gene Ratio")) +
   theme(axis.text.x = element_text(size=8)) +
   theme_bw() +
-  ggtitle("GO Enrichment Analysis")
+  ggtitle("KEGG Enrichment Analysis")
 
 ```
 
@@ -346,11 +348,12 @@ terms_to_highlight_kegg <- eresList$KEGG_2019 %>%
 terms_to_highlight_kegg %>%
   mutate(Term = gsub("\\([^()]*\\)", "", Term),
          Term = str_to_title(Term)) %>%
-  mutate(Term = factor(Term, levels = Term)) %>%
+  dplyr::arrange(Ratio) %>%
+  mutate(Term = factor(Term, levels = Term[rev(order(Ratio))])) %>%
   ggplot(aes(x = Ratio, y = Term)) +
   geom_point(aes(colour = Adjusted.P.value, size = Ratio)) + 
   ylab(NULL) + 
-  xlab("Cluster") +
+  xlab("Gene Ratio") +
   scale_color_continuous(low="red", high="blue", guide=guide_colorbar(reverse=FALSE)) + 
   scale_y_discrete(labels = function(x) str_wrap(x, width = 60),
                    limits=rev) +
