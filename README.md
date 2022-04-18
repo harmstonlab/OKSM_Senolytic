@@ -34,4 +34,4 @@ Sen_OKSM (Senolytic_OKSM)|Guts from flies in which the senolytic construct is ex
 ## Analysis
 **! Ensure that the annotation file is in a folder called `annotation` before running the analysis**
 
-The analysis was carried out to compare gene expression between 4 conditions -- control/TdTomato (Control), OKSM (Ab), Senolytic (Sen), and OKSM and Senolytic together (Sen_OKSM) -- across two datasets, using the isc.Rmd and ubiquitous.Rmd for the analysis. 
+The analysis was carried out to compare gene expression between 4 conditions -- control/TdTomato (Control), OKSM (Ab), Senolytic (Sen), and OKSM and Senolytic together (Sen_OKSM) -- across two datasets, using the `isc.Rmd` and `ubiquitous.Rmd` R Markdown files for the analysis. 
