@@ -43,6 +43,8 @@ library(ggpubr)
 library(png)
 library(clusterProfiler)
 library(enrichplot)
+library(plotly)
+library(ggplotify)
 ```
 
 ```{r, include=FALSE}
@@ -63,11 +65,11 @@ ubiq_pam_clust <- ubiq_pam_clust[order(ubiq_pam_clust$Cluster),]
 
 ```{r}
 experimental_metadata <- read.delim("data/ubiquitous/metadata_rem.txt", sep=",", header=TRUE, stringsAsFactors=FALSE)
-annotation = data.frame(Condition = rep(c("Control","OKSM", "Senolytic", "Senolyic_OKSM"),
+annotation = data.frame(Condition = rep(c("Control","OKSM", "Senolytic", "Senolytic_OKSM"),
                                             c(3, 3, 2, 3)))
 
 row.names(annotation) = experimental_metadata$sample_id 
-anno_colours = list(Condition = c(Control = "#BF3100", OKSM = "#E9B44C", Senolytic = "#1B998B", Senolyic_OKSM = "#5D576B"))
+anno_colours = list(Condition = c(Control = "#BF3100", OKSM = "#E9B44C", Senolytic = "#1B998B", Senolytic_OKSM = "#5D576B"))
 ```
 
 ```{r}
@@ -123,13 +125,17 @@ data.frame(Cluster = c("Cluster 1", "Cluster 2", "Cluster 3", "Cluster 4", "Clus
 ```
 
 ## ISC
+```{r}
+isc_pam_clust <- as.data.frame(isc_pam_clust)
+```
+
 ```{r, include=FALSE}
 experimental_metadata <- read.delim("data/isc/metadata.txt", sep=",", header=TRUE, stringsAsFactors=FALSE)
-annotation = data.frame(Condition = rep(c("Control","OKSM", "Senolytic", "Senolyic_OKSM"),
+annotation = data.frame(Condition = rep(c("Control","OKSM", "Senolytic", "Senolytic_OKSM"),
                                             c(3, 3, 3, 3)))
 
 row.names(annotation) = experimental_metadata$sample_id 
-anno_colours = list(Condition = c(Control = "#BF3100", OKSM = "#E9B44C", Senolytic = "#1B998B", Senolyic_OKSM = "#5D576B"))
+anno_colours = list(Condition = c(Control = "#BF3100", OKSM = "#E9B44C", Senolytic = "#1B998B", Senolytic_OKSM = "#5D576B"))
 ```
 
 ```{r}
@@ -145,7 +151,6 @@ pheatmap(isc_pam_clust[,1:(ncol(isc_pam_clust)-1)],
 
 ```{r}
 isc_pam_clust_df <- isc_pam_clust %>%
-  as.data.frame() %>%
   mutate(gene_name = ensembl.genes[rownames(.),]$external_gene_name)
 datatable(isc_pam_clust_df, options = list(scrollX = TRUE), class = "white-space: nowrap")
 ```
@@ -268,7 +273,7 @@ ggarrange(p)
 
 ## What are these 686 genes that overlap?
 ```{r}
-overlapping_genes <- ubi_pam_clust_df[rownames(ubi_pam_clust_df) %in% rownames(isc_pam_clust_df),]
+overlapping_genes <- ubi_pam_clust_df[intersect(rownames(ubi_pam_clust_df),rownames(isc_pam_clust_df)),]
 overlapping_genes %>%
   dplyr::select(gene_name, Cluster) %>%
   rename("Gene Name" = gene_name) %>%
@@ -328,7 +333,7 @@ terms_to_highlight_go %>%
          size = guide_legend(title = "Gene Ratio")) +
   theme(axis.text.x = element_text(size=8)) +
   theme_bw() +
-  ggtitle("KEGG Enrichment Analysis")
+  ggtitle("GO Enrichment Analysis")
 
 ```
 
@@ -363,6 +368,90 @@ terms_to_highlight_kegg %>%
   theme(axis.text.x = element_text(size=8)) +
   theme_bw() +
   ggtitle("KEGG Enrichment Analysis")
+
+```
+
+## What do some of these overlapping genes look like in a heatmap from each respective dataset?
+```{r}
+dna_rep <- c("RecQ4","DNApol-epsilon255","PCNA","dpa","Mcm6","DNApol-alpha60","Mcm10","DNApol-alpha73","Mcm2")
+dna_rep <- c(dna_rep, c("DNApol-epsilon255","CG13690","PCNA","Mcm7","dpa","Mcm3","Mcm5","Mcm6","DNApol-alpha60","DNApol-alpha73","Mcm2"))
+dna_rep <- unique(dna_rep)
+hippo <- c("Act42A","CycE","vn","upd3")
+toll <- c("PGRP-SC1b","PGRP-SC1a","DptA","PGRP-LB","p38c","key","CecA1")
+apoptosis <- c("Traf4","Eip74EF","Dronc","Tspo","Dcp-1","Drice")
+```
+
+### Ubiquitous
+```{r, include = FALSE}
+ubi_dnarep <- ubi_pam_clust_df[ubi_pam_clust_df$gene_name %in% dna_rep,] %>%
+  mutate(Type = "DNA Replication")
+ubi_hippo <- ubi_pam_clust_df[ubi_pam_clust_df$gene_name %in% hippo,] %>%
+  mutate(Type = "Hippo")
+ubi_toll <- ubi_pam_clust_df[ubi_pam_clust_df$gene_name %in% toll,] %>%
+  mutate(Type = "Toll")
+ubi_apoptosis <- ubi_pam_clust_df[ubi_pam_clust_df$gene_name %in% apoptosis,] %>%
+  mutate(Type = "Apoptosis")
+all_ubi <- rbind(ubi_dnarep,ubi_hippo,ubi_toll,ubi_apoptosis)
+rownames(all_ubi) <- all_ubi$gene_name
+```
+
+```{r}
+experimental_metadata <- read.delim("data/ubiquitous/metadata_rem.txt", sep=",", header=TRUE, stringsAsFactors=FALSE)
+annotation = data.frame(Condition = rep(c("Control","OKSM", "Senolytic", "Senolytic_OKSM"),
+                                            c(3, 3, 2, 3)))
+annotation_row = all_ubi %>%
+  dplyr::select(Type)
+row.names(annotation) = experimental_metadata$sample_id 
+anno_colours = list(Condition = c(Control = "#BF3100", OKSM = "#E9B44C", Senolytic = "#1B998B", Senolytic_OKSM = "#5D576B"))
+```
+
+```{r, fig.height = 8}
+pheatmap(all_ubi[,1:(ncol(all_ubi)-3)],
+         color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdBu")))(100),
+         fontsize_row = 10,
+         annotation_col = annotation,
+         annotation_colors = anno_colours,
+         annotation_row = annotation_row,
+         cluster_rows = FALSE,
+         cluster_cols = FALSE,
+         main = "Ubiquitous")
+
+```
+
+### ISC
+```{r, include = FALSE}
+isc_dnarep <- isc_pam_clust_df[isc_pam_clust_df$gene_name %in% dna_rep,] %>%
+  mutate(Type = "DNA Replication")
+isc_hippo <- isc_pam_clust_df[isc_pam_clust_df$gene_name %in% hippo,] %>%
+  mutate(Type = "Hippo")
+isc_toll <- isc_pam_clust_df[isc_pam_clust_df$gene_name %in% toll,] %>%
+  mutate(Type = "Toll")
+isc_apoptosis <- isc_pam_clust_df[isc_pam_clust_df$gene_name %in% apoptosis,] %>%
+  mutate(Type = "Apoptosis")
+all_isc <- rbind(isc_dnarep,isc_hippo,isc_toll,isc_apoptosis)
+rownames(all_isc) <- all_isc$gene_name
+```
+
+```{r}
+experimental_metadata <- read.delim("data/isc/metadata.txt", sep=",", header=TRUE, stringsAsFactors=FALSE)
+annotation = data.frame(Condition = rep(c("Control","OKSM", "Senolytic", "Senolytic_OKSM"),
+                                            c(3, 3, 3, 3)))
+annotation_row = all_isc %>%
+  dplyr::select(Type)
+row.names(annotation) = experimental_metadata$sample_id 
+anno_colours = list(Condition = c(Control = "#BF3100", OKSM = "#E9B44C", Senolytic = "#1B998B", Senolytic_OKSM = "#5D576B"))
+```
+
+```{r, fig.height = 8}
+pheatmap(all_isc[,1:(ncol(all_isc)-3)],
+         color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdBu")))(100),
+         fontsize_row = 10,
+         annotation_col = annotation,
+         annotation_colors = anno_colours,
+         annotation_row = annotation_row,
+         cluster_rows = FALSE,
+         cluster_cols = FALSE,
+         main = "ISC")
 
 ```
 

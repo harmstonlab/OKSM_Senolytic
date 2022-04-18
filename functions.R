@@ -8,13 +8,13 @@ library(BSgenome.Dmelanogaster.UCSC.dm6)
 # DE Functions
 write_files <- function(results, numerator, denominator){
   # these are all the genes that are differentially expressed between the two conditions, not just the significant ones
-  write.table(results, paste0(output_dir,numerator,"_",denominator,"_all.csv"), row.names = TRUE, col.names = TRUE)
+  no_outliers <- results[!is.na(results$padj),]
+  write.csv(no_outliers, paste0(output_dir,numerator,"_",denominator,"_all.csv"), row.names = TRUE, col.names = TRUE)
   
   # these are the genes that are significantly differentially expressed by FDR 10% and abs(log2fc) > log2(1.5)
-  sig_padj_genes <- results[!is.na(results$padj),]
-  sig_padj_genes <- sig_padj_genes[sig_padj_genes$padj < 0.1,]
+  sig_padj_genes <- no_outliers[no_outliers$padj < 0.1,]
   sig_padj_fc_genes <- sig_padj_genes[abs(sig_padj_genes$log2FoldChange) > lfc.threshold,]
-  write.table(sig_padj_fc_genes, paste0(output_dir,numerator,"_",denominator,"_significant.csv"), row.names = TRUE, col.names = TRUE)  
+  write.csv(sig_padj_fc_genes, paste0(output_dir,numerator,"_",denominator,"_significant.csv"), row.names = TRUE, col.names = TRUE)  
 }
 
 generate_de_section <- function(dds_obj, numerator_condition, denominator_condition){

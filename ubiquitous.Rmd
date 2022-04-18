@@ -49,6 +49,9 @@ bm.annotations = getBM(attributes=c("ensembl_gene_id", "entrezgene_id", "gene_bi
 ensembl.genes$gene_biotype = bm.annotations$gene_biotype[match(ensembl.genes$gene_id, bm.annotations$ensembl_gene_id) ]
 ensembl.genes$entrezgene_id = bm.annotations$entrezgene_id[match(ensembl.genes$gene_id, bm.annotations$ensembl_gene_id) ]
 ensembl.genes$external_gene_name = bm.annotations$external_gene_name[match(ensembl.genes$gene_id, bm.annotations$ensembl_gene_id) ]
+if(!dir.exists("output/ubiquitous")){
+  dir.create(file.path(getwd(),"output/ubiquitous"), recursive = TRUE)
+}
 saveRDS(ensembl.genes,"output/ubiquitous/ensembl.genes.rds")
 ```
 
@@ -454,8 +457,8 @@ sum(res$padj < 0.1, na.rm=T)
 
 ```{r extract significant transcripts, include=FALSE}
 ## Get significant genes by 10% FDR 
-sig_padj_genes <- res[!is.na(res$padj),]
-sig_padj_genes <- sig_padj_genes[sig_padj_genes$padj < 0.1,]
+no_outliers <- res[!is.na(res$padj),]
+sig_padj_genes <- no_outliers[no_outliers$padj < 0.1,]
 
 ## Get the rld for all differentially expressed genes & rld for significant genes
 rld <- rlog(dds_LRT)
@@ -536,11 +539,11 @@ datatable(pam_clust_df, options = list(scrollX = TRUE), class = "white-space: no
 ```
 
 ```{r, include = FALSE}
-dds_df <- res %>%
+dds_df <- no_outliers %>%
   as.data.frame() %>%
-  mutate(Cluster = pam_clust_df$Cluster[match(rownames(res), rownames(pam_clust_df))]) %>%
+  mutate(Cluster = pam_clust_df$Cluster[match(rownames(no_outliers), rownames(pam_clust_df))]) %>%
   dplyr::select(pvalue, padj, gene_biotype, external_gene_name, Cluster)
-write.table(dds_df, "output/ubiquitous/clusters.csv", row.names = TRUE, col.names = TRUE)
+write.csv(dds_df, "output/ubiquitous/clusters.csv", row.names = TRUE, col.names = TRUE)
 ```
 
 ## Number of Genes
