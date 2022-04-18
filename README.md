@@ -1,12 +1,13 @@
 # OKSM_Senolytic
 
 ## Versions
-* STAR: 2.7.1a
-* RSEM: v1.3.1
-* AME: 5.1.0
-* FASTQC: v0.11.8
-* R: R version 4.1.2 (2021-11-01)
+* **STAR:** 2.7.1a
+* **RSEM:** v1.3.1
+* **AME:** 5.1.0
+* **FASTQC:** v0.11.8
+* **R:** 
 ```
+* R version 4.1.2 (2021-11-01)
 * Platform: x86_64-apple-darwin17.0  (64-bit)
 * Running under: macOS Big Sur 11.3.1
 * Versions of R packages used can be found in the Session Info section at the bottom of each .Rmd file.
