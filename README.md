@@ -1,6 +1,6 @@
 # OKSM_Senolytic
 
-##Versions
+## Versions
 ---
 STAR: 2.7.1a
 RSEM: v1.3.1
@@ -12,13 +12,13 @@ Platform: x86_64-apple-darwin17.0  (64-bit)
 Running under: macOS Big Sur 11.3.1
 Versions of R packages used can be found in the Session Info section at the bottom of each .Rmd file.
 
-##Data
+## Data
 ---
 All raw and aligned data for this analysis can be obtained from GEO via the study accession number XXXXXX. The processed data can also be found in this repository under the folder `data`.
 Annotation file used: Drosophila_melanogaster.BDGP6.22.97.chr.gtf (Ensembl v97)
 Reference fasta file used: dm6.fa (Ensembl v97)
 
-##Data labels
+## Data labels
 ---
 RNA-seq label|Description
 Control| Guts from control flies.
@@ -30,7 +30,7 @@ OKSM| Guts from flies in which OKSM is over-expressed in the ubiquitous expressi
 Sen|Guts from flies with the senolytic construct expressed in the ubiquitous expression model.
 Sen_OKSM|Guts from flies in which the senolytic construct is expressed and OKSM is over-expressed in the ubiquitous expression model.
 
-##Analysis
+## Analysis
 ---
 **! Ensure that the annotation file is in a folder called `annotation` before running the analysis**
 
