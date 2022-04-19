@@ -1,6 +1,5 @@
 ---
 title: "RNASeq Comparison between Ubiquitous and ISC Datasets"
-author: Ellora Chua
 output: 
   html_document:
     toc: true
@@ -19,33 +18,19 @@ knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='./figures/comparison
                       echo=!short, warning=debug, message=debug, dev=c("png", "cairo_pdf"))
 ```
 
-```{r loading libraries, include = FALSE}
+```{r install and load packages, include=FALSE}
 source("functions.R")
-library(DESeq2)
-library(ggplot2)
-library(genefilter)
-library(GenomicFeatures)
-library(biomaRt)
-library(knitr)
-library(reshape2)
-library(scales)
-library(Biostrings)
-library(BSgenome.Dmelanogaster.UCSC.dm6)
-options(connectionObserver = NULL)
-library(org.Dm.eg.db)
-library(tidyverse)
-library(pheatmap)
-library(RColorBrewer)
-library(VennDiagram)
-library(DT)
-library(enrichR)
-library(ggpubr)
-library(png)
-library(clusterProfiler)
-library(enrichplot)
-library(plotly)
-library(ggplotify)
+
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+pkgs <- c("DESeq2", "ggplot2", "genefilter", "GenomicFeatures", "biomaRt", "knitr", "reshape2", "scales", "Biostrings", "BSgenome.Dmelanogaster.UCSC.dm6", "org.Dm.eg.db", "tidyverse", "pheatmap", "RColorBrewer", "VennDiagram", "DT", "enrichR", "ggpubr", "png", "clusterProfiler","enrichplot")
+
+for (i in pkgs){if(! i %in% installed.packages()){BiocManager::install(i)}}
+
+lapply(pkgs, require, character.only = TRUE)
 ```
+
 
 ```{r, include=FALSE}
 ensembl.genes <- readRDS("output/ubiquitous/ensembl.genes.rds")
@@ -269,6 +254,31 @@ venn.diagram(x=list(Ubiquitous = na.omit(rownames(ubi_pam_clust_df)), ISC = na.o
 olaps <- readPNG("output/comparison/overlaps.png")
 p <- rasterGrob(olaps, interpolate = TRUE)
 ggarrange(p)
+```
+
+## Is this a significant overlap?
+```{r}
+all_expressed_isc <- readRDS("output/isc/all_expressed_genes.rds")
+all_expressed_ubi <- readRDS("output/ubiquitous/all_expressed_genes.rds")
+```
+
+```{r}
+n = 100000
+res <- rep(NA, n) 
+num_of_isc_genes <- 2967 # how many to select 
+num_of_ubi_genes <- 1282
+for(i in 1:length(res)){
+drawA <- sample(x=na.omit(all_expressed_isc$external_gene_name), size=num_of_isc_genes, replace=FALSE) #draw isc genes from
+drawB <- sample(x=na.omit(all_expressed_ubi$external_gene_name), size=num_of_ubi_genes, replace=FALSE) #draw ubi genes from
+res[i] <- length(intersect(drawA, drawB))
+}
+res_df <- as.data.frame(res)
+ggplot(res_df, aes(x=res)) + geom_histogram(color="black", fill="grey", bins = 100) + geom_vline(aes(xintercept=686),color="red", linetype="dashed", size=1) + xlab("Number of overlaps")
+```
+
+```{r echo=TRUE}
+n
+sum(res > 686)/n
 ```
 
 ## What are these 686 genes that overlap?
