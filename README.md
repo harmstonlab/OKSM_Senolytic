@@ -13,7 +13,7 @@
 * Versions of R packages used can be found in the Session Info section at the bottom of each .Rmd file.
 ```
 ## Data
-All raw and aligned data for this analysis can be obtained from GEO via the study accession number XXXXXX. The processed data can also be found in this repository under the folder `data`.
+All raw and aligned data for this analysis can be obtained from GEO via the study accession number [GSE201338](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE201338). The processed data can also be found in this repository under the folder `data`.
 
 Annotation file used: `Drosophila_melanogaster.BDGP6.22.97.chr.gtf` (Ensembl v97)
 
