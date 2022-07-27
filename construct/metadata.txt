@@ -1,0 +1,13 @@
+sample_id,condition,replicate
+AT_TdTom_1,Control,"1"
+AT_TdTom_2,Control,"2"
+AT_TdTom_3,Control,"3"
+AT_OKSM_1,OKSM,"1"
+AT_OKSM_2,OKSM,"2"
+AT_OKSM_3,OKSM,"3"
+AT_Sen_1,Senolytic,"1"
+AT_Sen_2,Senolytic,"2"
+AT_Sen_3,Senolytic,"3"
+AT_Sen_OKSM_1,Senolytic_OKSM,"1"
+AT_Sen_OKSM_2,Senolytic_OKSM,"2"
+AT_Sen_OKSM_3,Senolytic_OKSM,"3"
