@@ -52,7 +52,7 @@ The new reference genome is then generated using STAR and the command:
 ```
 STAR --runThreadN 10 \
 --runMode genomeGenerate \
---genomeDir /home/ellora/projects/oksm_nov2021/with_constructs/ensembl97 \
+--genomeDir /home/ellora/projects/oksm_nov2021/construct/ref \
 --genomeFastaFiles dm6.fa oksm.fa \
 --sjdbGTFfile Drosophila_melanogaster.BDGP6.22.97.chr.gtf \
 --sjdbOverhang 100 \
