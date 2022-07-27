@@ -94,7 +94,7 @@ oksm_long <- oksm %>%
   pivot_longer(cols = everything())
 oksm_long <- oksm_long %>%
   mutate(construct = c(rep("myc", 12), rep("oks", 12)),
-         condition = str_sub(oksm_long$name,4,-3)) 
+         condition = factor(str_sub(oksm_long$name,4,-3), levels = c("TdTom", "OKSM", "Sen", "Sen_OKSM")))
 oksm_long %>%
   ggplot(aes(x = name, y = value, fill = condition)) + 
   geom_bar(stat="identity", position = "dodge") +
@@ -104,8 +104,9 @@ oksm_long %>%
   facet_wrap(~construct) +
   theme_bw() +
   theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank())
-  #scale_fill_manual(values = c("#BF3100", "#E9B44C", "#1B998B", "#5D576B"))
+        axis.ticks.x = element_blank()) +
+  scale_fill_manual(values = c("#BF3100", "#E9B44C", "#1B998B", "#5D576B")) +
+  scale_x_discrete(limits = c("AT_TdTom_1","AT_TdTom_2","AT_TdTom_3","AT_OKSM_1","AT_OKSM_2","AT_OKSM_3","AT_Sen_1","AT_Sen_2","AT_Sen_3","AT_Sen_OKSM_1","AT_Sen_OKSM_2","AT_Sen_OKSM_3"))
 ```
 # Session Info
 ```{r}
