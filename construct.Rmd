@@ -52,7 +52,7 @@ experimental_metadata = read.delim("construct/metadata.txt", sep=",", header=TRU
 
 #Create a matrix of the data (nrow can be obtained by calling wc -l *.genes.results in terminal; note -1 for header)
 #Note that the nrow for this now changes since we've added the construct
-data = matrix(0, ncol=length(experimental_metadata$sample_id), nrow=17717)
+data = matrix(0, ncol=length(experimental_metadata$sample_id), nrow=17716)
 colnames(data)= experimental_metadata$sample_id
 for( i in experimental_metadata$sample_id){
   data[,i] = read.table(paste("construct/", i, ".genes.results",sep=""), sep="\t", header=TRUE)$expected_count
@@ -108,6 +108,7 @@ oksm_long %>%
   scale_fill_manual(values = c("#BF3100", "#E9B44C", "#1B998B", "#5D576B")) +
   scale_x_discrete(limits = c("AT_TdTom_1","AT_TdTom_2","AT_TdTom_3","AT_OKSM_1","AT_OKSM_2","AT_OKSM_3","AT_Sen_1","AT_Sen_2","AT_Sen_3","AT_Sen_OKSM_1","AT_Sen_OKSM_2","AT_Sen_OKSM_3"))
 ```
+
 # Session Info
 ```{r}
 sessionInfo()
