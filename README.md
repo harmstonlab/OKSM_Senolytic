@@ -37,9 +37,8 @@ Sen_OKSM (Senolytic_OKSM)|Guts from flies in which the senolytic construct is ex
 The analysis was carried out to compare gene expression between 4 conditions -- control/TdTomato (Control), OKSM (Ab), Senolytic (Sen), and OKSM and Senolytic together (Sen_OKSM) -- across two datasets, using the `isc.Rmd` and `ubiquitous.Rmd` R Markdown files for the analysis. 
 
 ## Construct analysis
-To look at how much of the OKSM construct is present in the relevant conditions, we first obtain the sequence of the OKSIM construct from [here](https://www.addgene.org/24603/sequences/). Next, the `.gtf` file was modified to contain 3 extra entries:
+To look at how much of the OKSM construct is present in the relevant conditions, we first obtain the sequence of the OKSIM construct from [here](https://www.addgene.org/24603/sequences/) to create a chromosome file called `oksm.fa`. Next, the `.gtf` file was modified to contain 2 extra entries:
 ```
-oksm	AddedGenes	exon	608	12417	.	+	.	gene_id "oksm"; gene_name "oksm"; gene_biotype "construct"; transcript_id "oksm";
 oksm	AddedGenes	exon	608	1927	.	+	.	gene_id"myc"; gene_name "myc"; gene_biotype "construct"; transcript_id "myc";
 oksm	AddedGenes	exon	8736	12383	.	+	.	gene_id "oks"; gene_name "oks"; gene_biotype "construct"; transcript_id "oks";
 ```
