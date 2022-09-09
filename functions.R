@@ -22,6 +22,7 @@ generate_de_section <- function(dds_obj, numerator_condition, denominator_condit
   res <- lfcShrink(dds = dds_obj, res = res1, type = "normal", contrast = c( "condition", numerator_condition, denominator_condition))
   res$gene_biotype <- ensembl.genes$gene_biotype[match(row.names(res1), ensembl.genes$gene_id)]
   res$external_gene_name <- ensembl.genes$external_gene_name[match(row.names(res1), ensembl.genes$gene_id)]
+  
   print(paste("Number of significant genes (padj < 0.1 & log2FoldChange < log2(1.5)):", sum(res$padj < 0.1 & abs(res$log2FoldChange) > lfc.threshold, na.rm = T)))
   hist(res$pvalue)
   ### Writing out .csv files
@@ -149,7 +150,7 @@ cluster_boxplot <- function(cluster_df, name, control, sen_oksm, oksm){
            theme(axis.text.x = element_blank(), legend.position="bottom") +
            xlab(NULL) +
            ylab(NULL) +
-           labs(title = name) #+
+           labs(title = name) + scale_y_continuous(limits=c(-3.5, 3.5))
          #scale_y_continuous(limits = c(lower_y_limit, upper_y_limit))
   )
 }

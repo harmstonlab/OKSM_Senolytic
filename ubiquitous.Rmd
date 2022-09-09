@@ -389,51 +389,10 @@ filter = apply(counts(ddssva, normalized=TRUE), 1, function(x){ mean(x) >= 10 })
 ddssva = ddssva[filter, ]
 ```
 
-## Wald Tests {.tabset}
-```{r, include=FALSE}
-dds_wald = nbinomWaldTest(ddssva)
-lfc.threshold = log2(1.5)
-if(!dir.exists("output/ubiquitous")){
-  dir.create(file.path(getwd(),"output/ubiquitous"), recursive = TRUE)
-}
-output_dir <- "output/ubiquitous/"
-```
-
-### OKSM vs Control(TdTom)
-```{r}
-generate_de_section(dds_wald, "OKSM", "Control")
-```
-
-### Senolytic vs Control(TdTom)
-```{r}
-generate_de_section(dds_wald, "Senolytic", "Control")
-```
-
-### Senolytic OKSM vs Control(TdTom)
-```{r}
-generate_de_section(dds_wald, "Senolytic_OKSM", "Control")
-```
-
-### OKSM vs Senolytic
-```{r}
-generate_de_section(dds_wald, "OKSM", "Senolytic")
-```
-
-### OKSM vs Senolytic_OKSM
-```{r}
-generate_de_section(dds_wald, "OKSM", "Senolytic_OKSM")
-```
-
-### Senolytic vs Senolytic_OKSM
-```{r}
-generate_de_section(dds_wald, "Senolytic", "Senolytic_OKSM")
-```
-
-
 ## Likelihood Ratio Test
 ```{r}
-dds_LRT = nbinomLRT(ddssva, reduced = ~SV1+SV2)
-res = results(dds_LRT)
+ddssva = nbinomLRT(ddssva, reduced = ~SV1+SV2)
+res = results(ddssva)
 
 res$gene_biotype= ensembl.genes$gene_biotype[match(row.names(res), ensembl.genes$gene_id)]
 res$external_gene_name= ensembl.genes$external_gene_name[match(row.names(res), ensembl.genes$gene_id)]
@@ -458,7 +417,7 @@ no_outliers <- res[!is.na(res$padj),]
 sig_padj_genes <- no_outliers[no_outliers$padj < 0.1,]
 
 ## Get the rld for all differentially expressed genes & rld for significant genes
-rld <- rlog(dds_LRT)
+rld <- rlog(ddssva)
 significant_rld <- rld[rownames(sig_padj_genes)]
 ```
 
@@ -480,6 +439,47 @@ sig_de_granges <- promoters(sig_de_granges, upstream= 500, downstream = 500, use
 ```{r, include=FALSE}
 saveRDS(ddssva, "output/ubiquitous/ddssva.rds")
 ```
+
+## Wald Tests {.tabset}
+```{r, include=FALSE}
+#dds_wald = nbinomWaldTest(ddssva)
+lfc.threshold = log2(1.5)
+if(!dir.exists("output/ubiquitous")){
+  dir.create(file.path(getwd(),"output/ubiquitous"), recursive = TRUE)
+} 
+output_dir <- "output/ubiquitous/"
+```
+
+### OKSM vs Control(TdTom)
+```{r}
+generate_de_section(ddssva, "OKSM", "Control")
+```
+
+### Senolytic vs Control(TdTom)
+```{r}
+generate_de_section(ddssva, "Senolytic", "Control")
+```
+
+### Senolytic OKSM vs Control(TdTom)
+```{r}
+generate_de_section(ddssva, "Senolytic_OKSM", "Control")
+```
+
+### OKSM vs Senolytic
+```{r}
+generate_de_section(ddssva, "OKSM", "Senolytic")
+```
+
+### OKSM vs Senolytic_OKSM
+```{r}
+generate_de_section(ddssva, "OKSM", "Senolytic_OKSM")
+```
+
+### Senolytic vs Senolytic_OKSM
+```{r}
+generate_de_section(ddssva, "Senolytic", "Senolytic_OKSM")
+```
+
 
 # Visualisation
 ```{r z-score transformation}
@@ -855,6 +855,47 @@ ame_res[[7]] %>%
   dplyr::select(-motif_DB, -motif_ID) %>%
   datatable(options = list(scrollX = TRUE))
 ```
+
+
+# Gene expression plots {.tabset}
+
+```{r}
+
+genes_plot <- as.data.frame(counts(ddssva, normalized = TRUE)[c("FBgn0053542", "FBgn0000490"), ])
+
+genes_plot_long <- genes_plot %>%
+  pivot_longer(cols = everything())
+genes_plot_long <- genes_plot_long %>%
+  mutate(gene = c(rep("upd3", 11), rep("dpp", 11)),
+         condition = factor(str_sub(genes_plot_long$name,4,-3), levels = c("TdTom", "OKSM", "Sen", "Sen_OKSM")))
+
+genes_plot_long[genes_plot_long$gene=="upd3",] %>%
+  ggplot(aes(x = condition, y = value, group = condition, fill=condition)) + 
+  geom_boxplot() +
+  #geom_text(aes(label=round(value,2)), vjust=-0.3, size=3.5) + 
+  xlab("Samples") +
+  ylab("Normalised Counts") +
+  theme_bw() +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  scale_fill_manual(values = c("#BF3100", "#E9B44C", "#1B998B", "#5D576B"))+
+  geom_point(data=genes_plot_long[genes_plot_long$gene=="upd3",], aes(x=condition, y=value), size=2) + scale_y_continuous(limits=c(0, 705) )
+
+genes_plot_long[genes_plot_long$gene=="dpp",] %>%
+  ggplot(aes(x = condition, y = value, group = condition, fill=condition)) + 
+  geom_boxplot() +
+  #geom_text(aes(label=round(value,2)), vjust=-0.3, size=3.5) + 
+  xlab("Samples") +
+  ylab("Normalised Counts") +
+  theme_bw() +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  scale_fill_manual(values = c("#BF3100", "#E9B44C", "#1B998B", "#5D576B"))+
+  geom_point(data=genes_plot_long[genes_plot_long$gene=="dpp",], aes(x=condition, y=value), size=2) + scale_y_continuous(limits=c(299, 705) )
+
+```
+
+
 
 # Session Info
 ```{r}

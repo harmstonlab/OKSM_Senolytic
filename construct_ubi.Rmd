@@ -1,0 +1,130 @@
+---
+title: "Checking for constructs"
+author: Ellora Chua
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
+    theme: yeti
+    highlight: haddock
+---
+
+```{r global_options, include=FALSE}
+short=FALSE 
+#if short==TRUE, do not echo code chunks -- code folding doesn't work if short == TRUE
+debug=FALSE
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='./figures/construct/',
+                      echo=!short, warning=debug, message=debug, dev=c("png", "cairo_pdf"))
+```
+
+```{r install and load packages, include=FALSE}
+source("functions.R")
+
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+pkgs <- c("DESeq2", "ggplot2", "genefilter", "GenomicFeatures", "biomaRt", "knitr", "reshape2", "scales", "Biostrings", "BSgenome.Dmelanogaster.UCSC.dm6", "tidyverse", "pheatmap", "RColorBrewer", "DT", "enrichR", "factoextra", "cowplot")
+
+for (i in pkgs){if(! i %in% installed.packages()){BiocManager::install(i)}}
+
+lapply(pkgs, require, character.only = TRUE)
+```
+
+# Quality Control & EDA
+```{r cache=TRUE, include=FALSE}
+dm.gtf.db <- makeTxDbFromGFF("annotation/Drosophila_melanogaster.BDGP6.22.97.chr.gtf", format="gtf" )
+ensembl.genes = genes(dm.gtf.db)
+fruitfly = useEnsembl(biomart="ENSEMBL_MART_ENSEMBL", dataset="dmelanogaster_gene_ensembl", mirror = "uswest")
+bm.annotations = getBM(attributes=c("ensembl_gene_id", "entrezgene_id", "gene_biotype", "external_gene_name"), mart=fruitfly, filters="ensembl_gene_id", values=ensembl.genes$gene_id, uniqueRows=TRUE)
+ensembl.genes$gene_biotype = bm.annotations$gene_biotype[match(ensembl.genes$gene_id, bm.annotations$ensembl_gene_id) ]
+ensembl.genes$entrezgene_id = bm.annotations$entrezgene_id[match(ensembl.genes$gene_id, bm.annotations$ensembl_gene_id) ]
+ensembl.genes$external_gene_name = bm.annotations$external_gene_name[match(ensembl.genes$gene_id, bm.annotations$ensembl_gene_id) ]
+
+if(!dir.exists("output/construct")){
+  dir.create(file.path(getwd(),"output/construct"), recursive = TRUE)
+}
+```
+
+```{r loading data, include=FALSE}
+experimental_metadata = read.delim("construct/metadata_ubi.txt", sep=",", header=TRUE, stringsAsFactors=FALSE)
+
+#Create a matrix of the data (nrow can be obtained by calling wc -l *.genes.results in terminal; note -1 for header)
+#Note that the nrow for this now changes since we've added the construct
+data = matrix(0, ncol=length(experimental_metadata$sample_id), nrow=17716)
+colnames(data)= experimental_metadata$sample_id
+for( i in experimental_metadata$sample_id){
+  data[,i] = read.table(paste("construct/", i, ".genes.results",sep=""), sep="\t", header=TRUE)$expected_count
+}
+row.names(data) = read.table(paste("construct/", i, ".genes.results",sep=""), sep="\t", header=TRUE)$gene_id
+
+#Create a factor for the condition column - by making it a factor you give it an order
+experimental_metadata$condition = factor(experimental_metadata$condition, levels=c("Control", "OKSM", "Senolytic", "Senolytic_OKSM"))
+
+#Create a factor for the replicate column - by making it a factor you give it an order
+experimental_metadata$replicate = factor(experimental_metadata$replicate, levels=c("1", "2", "3"))
+#experimental_metadata$batch = factor(experimental_metadata$batch, levels=c("1", "2", "3"))
+
+#DESeq needs read counts to be integers
+data_mat = apply(round(data), c(1,2), as.integer)
+
+#Specifying which group is the control group to make appropriate contrasts downstream
+#experimental_metadata$condition <- relevel(experimental_metadata$condition, ref = "Control")
+
+#Creates the DESeq2 object
+#Since there aren't any batch effects, we don't need to take those into account
+dds = DESeqDataSetFromMatrix(data_mat, experimental_metadata, ~ condition)
+colnames(dds) = colnames(data_mat)
+
+#Estimates the size factors using the "median ratio method" described by Equation 5 in Anders and Huber (2010)
+dds <- estimateSizeFactors(dds) 
+
+#This function obtains dispersion estimates for a count data set
+dds <- estimateDispersions(dds)
+
+#This function transforms the count data to the log2 scale in a way which minimizes differences between samples for rows with small counts
+rld <- rlog(dds)
+```
+
+### OKSM construct read counts
+```{r}
+oksm <- as.data.frame(counts(dds, normalized = TRUE)[c("myc","oks"), ])
+oksm_long <- oksm %>%
+  pivot_longer(cols = everything())
+oksm_long <- oksm_long %>%
+  mutate(construct = c(rep("myc", 11), rep("oks", 11)),
+         condition = factor(str_sub(oksm_long$name,4,-3), levels = c("TdTom", "OKSM", "Sen", "Sen_OKSM")))
+oksm_long %>%
+  ggplot(aes(x = name, y = value, fill = condition)) + 
+  geom_bar(stat="identity", position = "dodge") +
+  geom_text(aes(label=round(value,2)), vjust=-0.3, size=3.5) + 
+  xlab("Samples") +
+  ylab("Normalised Counts") +
+  facet_wrap(~construct) +
+  theme_bw() +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  scale_fill_manual(values = c("#BF3100", "#E9B44C", "#1B998B", "#5D576B")) +
+  scale_x_discrete(limits = c("AT_TdTom_1","AT_TdTom_2","AT_TdTom_3","AT_OKSM_1","AT_OKSM_2","AT_OKSM_3","AT_Sen_2","AT_Sen_3","AT_Sen_OKSM_1","AT_Sen_OKSM_2","AT_Sen_OKSM_3"))
+```
+
+
+```{r}
+oksm_long %>%
+  ggplot(aes(x = condition, y = value, group = condition, fill=condition)) + 
+  geom_boxplot() +
+  #geom_text(aes(label=round(value,2)), vjust=-0.3, size=3.5) + 
+  xlab("Samples") +
+  ylab("Normalised Counts") +
+  theme_bw() +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  scale_fill_manual(values = c("#BF3100", "#E9B44C", "#1B998B", "#5D576B"))+
+  geom_point(data=oksm_long, aes(x=condition, y=value), size=2, position="dodge") + facet_wrap(~construct)
+```
+
+# Session Info
+```{r}
+sessionInfo()
+```
